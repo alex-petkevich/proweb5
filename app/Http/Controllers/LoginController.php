@@ -115,7 +115,7 @@ class LoginController extends BaseController
      */
     public function sendReminder()
     {
-        $result = Password::remind(Input::only('email'), function ($message, $user) {
+        $result = Password::reset(Input::only('email'), function ($message, $user) {
             $message->subject(trans('login.reminder_subject'));
         });
 
@@ -123,7 +123,7 @@ class LoginController extends BaseController
             case Password::INVALID_USER:
                 return Redirect::back()->with('error', trans('login.wrong_creds'));
 
-            case Password::REMINDER_SENT:
+            case Password::RESET_LINK_SENT:
                 return Redirect::back()->with('status', trans('login.reminder_sent'));
         }
 
