@@ -35,6 +35,16 @@ class UsersController extends BaseController
       if (isset($input['filter']) && $input['filter'] == 'reset') {
          Session::forget('USER_FILTER');
       }
+      if (isset($input['sort_value'])) {
+         $sort = $input['sort_value'];
+         $sort_dir = $input['sort_dir'];
+         Session::put("USER_SORT", array('value' => $sort, 'dir' => $sort_dir));
+      }
+      $sort = Session::get('USER_SORT');
+
+      if (isset($input['filter']) && $input['filter'] == 'reset') {
+         Session::forget('USER_FILTER');
+      }
 
       if (Session::has('USER_FILTER')) {
          $filter = Session::get('USER_FILTER');
@@ -45,14 +55,23 @@ class UsersController extends BaseController
             if (!in_array($k,$stop_fields) && $v!='')
                $users = $users->where($k, 'like', '%'.$v.'%');
          }
+
+         if (Session::has('USER_SORT')) {
+            $users = $users->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : '');
+         }
+         
          $users = $users->paginate(Config::get('view.paginate-qty'));
 
       } else {
-         $users = $this->user->paginate(Config::get('view.paginate-qty'));
+         if (Session::has('USER_SORT') && $sort['value'] != '') {
+            $users = $this->user->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : 'asc');
+         } else {
+            $users = $this->user;
+         }
+         $users = $users->paginate(Config::get('view.paginate-qty'));
       }
 
       $sort_options = User::getSortOptions();
-      $sort = array('value'=>'','dir'=>'');
 
       return View::make('backend.users.index', compact('users','filter','sort_options','sort'));
    }
