@@ -1,0 +1,87 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register all of the routes for an application.
+| It's a breeze. Simply tell Laravel the URIs it should respond to
+| and give it the controller to call when that URI is requested.
+|
+*/
+
+
+Route::filter('admin_role_only', function()
+{
+    if (!Auth::user()->isAdmin()) {
+        return Redirect::intended('/')->withMessage(trans('login.not_enough_permissions'));
+    }
+});
+
+Route::filter('not_guest', function(){
+    if (Auth::guest()) {
+        return Redirect::intended('/')->withInput()->with('message', trans('users.must_be_logged'));
+    }
+});
+
+Route::filter('regular_user', function(){
+    if (!Auth::guest()) {
+        if (!Auth::user()->isRegular()) {
+            return Redirect::back()->with('message', trans('login.not_authenticated') );
+        }
+    }
+});
+
+Route::filter('admin.auth', function()
+{
+    if (Auth::guest()) {
+        return Redirect::to('login');
+    }
+});
+
+Route::filter('un_auth', function()
+{
+    if (!Auth::guest()) {
+        Auth::logout();
+    }
+});
+
+
+Route::get('/', array('as' => 'home', 'uses' => 'HomeController@index'));
+Route::get('logout', array('as' => 'login.logout', 'uses' => 'LoginController@logout'));
+Route::get('profile', array('as' => 'user.profile','uses' => 'UsersController@editProfile'));
+
+
+Route::group(array('before' => 'un_auth'), function()
+{
+    Route::get('login', array('as' => 'login.index', 'uses' => 'LoginController@index'));
+    Route::post('login', array('uses' => 'LoginController@login'));
+
+    Route::get('register', array('as' => 'login.register', 'uses' => 'LoginController@register'));
+    Route::post('register', array('uses' => 'LoginController@store'));
+
+    Route::get('password/remind', array('as' => 'password.remind', 'uses' => 'LoginController@showReminderForm'));
+    Route::post('password/remind', array('uses' => 'LoginController@sendReminder'));
+
+    Route::get('password/reset/{token}', array('as' => 'password.reset', 'uses' => 'LoginController@showResetForm'));
+    Route::post('password/reset/{token}', array('uses' => 'LoginController@resetPassword'));
+
+});
+
+Route::group(array('before' => 'admin.auth'), function()
+{
+    Route::get('dashboard', array('as' => 'login.dashboard', 'uses' => 'LoginController@dashboard'));
+
+    Route::group(array('before' => 'admin_role_only'), function()
+    {
+        // admin routes
+
+//      Route::post('upload', array('uses' => 'HomeController@uploadOfferImage'));
+        Route::resource('roles', 'RolesController');
+        Route::resource('users', 'UsersController');
+    });
+
+    // Routes only for registered users
+
+});
