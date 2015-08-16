@@ -14,6 +14,7 @@
     @endif
 
 {!! Form::open(array('route' => 'password.remind','role' => 'form','class' => 'form-signin',)) !!}
+        {!! csrf_field() !!}
  <h2 class="form-signin-heading">{{{ trans('auth.forgot_password') }}}</h2>
     <div class="form-group">
       {!! Form::label('email', trans('auth.your_email'), array('class' => 'control-label'))!!}

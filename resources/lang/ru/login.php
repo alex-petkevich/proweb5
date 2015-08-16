@@ -13,7 +13,7 @@
       'thank_you' => 'Спасибо за регистрацию!',
       'see_again' => 'Приходите снова!',
       'reminder_subject' => 'Напоминание пароля',
-      'reminder_sent' => 'Напоминаниие отправлено',
+       'reminder_sent' => 'Напоминание отправлено',
       'success_reset' => 'Ваш пароль был успешно сброшен.',
       'wrong_creds' => 'Неверный логин или пароль!',
       'welcome_subj' => 'Welcome to site!',

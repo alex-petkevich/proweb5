@@ -1,34 +1,36 @@
-@extends('frontend.layout')
+@extends('frontend.layout_clean')
 
-@section('main')
-
+@section('content')
+   <div class="container">
 @if (Session::has('error'))
-<div class="alert alert-error">
+         <div class="alert alert-danger">
    {!! trans(Session::get('reason')) !!}
 </div>
 @endif
 
-<h1>{!! trans('reset_password') !!}</h1>
 
-{!! Form::open() !!}
+      {!! Form::open(array('role' => 'form','class' => 'form-signin',)) !!}
 {!! Form::hidden('token', $token) !!}
-<ul>
-   <li>
-      {!! Form::label('email', trans('auth.email') )!!}
-      {!! Form::email('email', Input::old('email')) !!}
-   </li>
+      <h2 class="form-signin-heading">{!! trans('auth.reset_password') !!}</h2>
 
-   <li>
-      {!!Form::label('password', trans('auth.new_password'))!!}
-      {!! Form::password('password')!!}
-   </li>
+      <div class="form-group">
+         {!! Form::label('email', trans('auth.email'), array('class' => 'control-label') )!!}
+         {!! Form::email('email', Input::old('email'), array('class' => 'form-control')) !!}
+      </div>
 
-   <li>
-      {!!Form::label('password', trans('auth.new_password_confirm'))!!}
-      {!! Form::password('password_confirmation')!!}
-   </li>
+      <div class="form-group">
+         {!!Form::label('password', trans('auth.new_password'), array('class' => 'control-label'))!!}
+         {!! Form::password('password', array('class' => 'form-control'))!!}
+      </div>
 
-</ul>
+      <div class="form-group">
+         {!!Form::label('password', trans('auth.new_password_confirm'), array('class' => 'control-label'))!!}
+         {!! Form::password('password_confirmation', array('class' => 'form-control'))!!}
+      </div>
+
+      <div class="form-group">
 {!! Form::submit(trans('auth.reset'), array('class' => 'btn'))!!}
+      </div>
 {!! Form::close() !!}
+   </div>
 @stop

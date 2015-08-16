@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 class LoginController extends BaseController
 {
 
@@ -115,7 +117,7 @@ class LoginController extends BaseController
      */
     public function sendReminder()
     {
-        $result = Password::reset(Input::only('email'), function ($message, $user) {
+        $result = Password::sendResetLink(Input::only('email'), function ($message, $user) {
             $message->subject(trans('login.reminder_subject'));
         });
 
@@ -148,16 +150,18 @@ class LoginController extends BaseController
      *
      * @return Response
      */
-    public function resetPassword($token)
+    public function resetPassword(Request $request)
     {
-        $credentials = array('email' => Input::only('email'));
+        $credentials = $request->only(
+           'email', 'password', 'password_confirmation', 'token'
+        );
 
         $response = Password::reset($credentials, function ($user, $password) {
-            $user->password = Hash::make($password);
+            $user->password = bcrypt($password);
 
             $user->save();
 
-            Auth::loginUsingId($user->id);
+            Auth::login($user);
 
         });
 
@@ -165,10 +169,12 @@ class LoginController extends BaseController
             case Password::INVALID_PASSWORD:
             case Password::INVALID_TOKEN:
             case Password::INVALID_USER:
-                return Redirect::back()->with('error', trans('login.success_reset'));
+            return Redirect::back()->with('error', trans('login.wrong_creds'));
 
             case Password::PASSWORD_RESET:
-                return Redirect::home()->with('message', trans('login.wrong_creds'));
+                return redirect()->back()
+                   ->withInput($request->only('email'))
+                   ->withErrors(['email' => trans($response)]);
         }
     }
 
