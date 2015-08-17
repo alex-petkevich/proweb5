@@ -24,5 +24,8 @@ return array(
    'search' => 'Поиск',
    'show_user' => 'Показать пользователя',
    'return_all' => 'Вернуться к списку',
+   'tabs-general' => 'Общие',
+   'tabs-profile' => 'Профайл',
+   'tabs-notes' => 'Заметки',
    'must_be_logged' => 'Вы должны войти, чтобы завершить это действие.'
 );

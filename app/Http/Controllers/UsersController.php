@@ -80,7 +80,7 @@ class UsersController extends BaseController
    {
       $user = $this->user;
 
-      return View::make('backend.users.edit', compact('user'));
+      return View::make('backend.users.edit.general', compact('user'));
    }
 
 
@@ -107,7 +107,7 @@ class UsersController extends BaseController
    {
       $user = $this->user->findOrFail($id);
 
-      return View::make('backend.users.edit', compact('user'));
+      return View::make('backend.users.edit.general', compact('user'));
    }
 
    public function store()
