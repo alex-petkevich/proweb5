@@ -15,7 +15,7 @@
       'reminder_subject' => 'Напоминание пароля',
        'reminder_sent' => 'Напоминание отправлено',
       'success_reset' => 'Ваш пароль был успешно сброшен.',
-      'wrong_creds' => 'Неверный логин или пароль!',
+       'wrong_creds' => 'Неверные данные логина',
       'welcome_subj' => 'Welcome to site!',
       'not_enough_permissions' => 'You don\'t have enough permissions to do that.',
       'not_authenticated' => 'You cannot do that due to your role.'

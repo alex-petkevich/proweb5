@@ -4,7 +4,7 @@
    <div class="container">
 @if (Session::has('error'))
          <div class="alert alert-danger">
-   {!! trans(Session::get('reason')) !!}
+             {!! Session::get('error') !!}
 </div>
 @endif
 

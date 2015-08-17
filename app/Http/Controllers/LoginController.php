@@ -161,7 +161,7 @@ class LoginController extends BaseController
 
             $user->save();
 
-            Auth::login($user);
+            Auth::loginUsingId($user->id);
 
         });
 
@@ -172,9 +172,8 @@ class LoginController extends BaseController
             return Redirect::back()->with('error', trans('login.wrong_creds'));
 
             case Password::PASSWORD_RESET:
-                return redirect()->back()
-                   ->withInput($request->only('email'))
-                   ->withErrors(['email' => trans($response)]);
+                return Redirect::home()->with('message', trans('login.success_reset'));
+                   
         }
     }
 
