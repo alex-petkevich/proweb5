@@ -110,6 +110,20 @@ class UsersController extends BaseController
       return View::make('backend.users.edit.general', compact('user'));
    }
 
+   public function edit_profile($id)
+   {
+      $user = $this->user->findOrFail($id);
+
+      return View::make('backend.users.edit.profile', compact('user'));
+   }
+
+   public function edit_notes($id)
+   {
+      $user = $this->user->findOrFail($id);
+
+      return View::make('backend.users.edit.notes', compact('user'));
+   }
+
    public function store()
    {
       $input = Input::all();

@@ -38,10 +38,5 @@
       {!! Form::checkbox('active','1',array('class' => 'form-control')) !!}
     </div>
 
-        <div class="form-group">
-      {!! Form::submit(trans('users.update'), array('class' => 'btn btn-info')) !!}
-      {!! link_to_route('users.index', trans('users.cancel'), $user->id, array('class' => 'btn btn-default')) !!}
-        </div>
-{!! Form::close() !!}
 
 @stop

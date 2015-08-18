@@ -15,14 +15,23 @@
             {!! Form::model($user, array('method' => 'PATCH', 'route' => array('users.update', $user->id), 'role' => 'form')) !!}
         @endif
 
+            @if ($user->id)
         <ul class="nav nav-pills">
-            <li role="presentation" class="active"><a href="#">{!! trans('users.tabs-general')  !!}</a></li>
-            <li role="presentation"><a href="#">{!! trans('users.tabs-profile')  !!}</a></li>
-            <li role="presentation"><a href="#">{!! trans('users.tabs-notes')  !!}</a></li>
+            <li role="presentation" class="active">{!! link_to_route('users.edit', trans('users.tabs-general')) !!}</li>
+            <li role="presentation">{!! link_to_route('users.edit_profile', trans('users.tabs-profile')) !!}</li>
+            <li role="presentation">{!! link_to_route('users.edit_notes', trans('users.tabs-notes')) !!}</li>
         </ul>
         <br/>
-
+            @endif
+            
         @yield('tab_content')
+
+
+            <div class="form-group">
+                {!! Form::submit(trans('users.update'), array('class' => 'btn btn-info')) !!}
+                {!! link_to_route('users.index', trans('users.cancel'), $user->id, array('class' => 'btn btn-default')) !!}
+            </div>
+            {!! Form::close() !!}
     </div>
 
 @stop
