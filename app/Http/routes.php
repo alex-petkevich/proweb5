@@ -12,20 +12,20 @@
 */
 
 
-Route::filter('admin_role_only', function()
+Route::middleware('admin_role_only', function ()
 {
     if (!Auth::user()->isAdmin()) {
         return Redirect::intended('/')->withMessage(trans('login.not_enough_permissions'));
     }
 });
 
-Route::filter('not_guest', function(){
+Route::middleware('not_guest', function () {
     if (Auth::guest()) {
         return Redirect::intended('/')->withInput()->with('message', trans('users.must_be_logged'));
     }
 });
 
-Route::filter('regular_user', function(){
+Route::middleware('regular_user', function () {
     if (!Auth::guest()) {
         if (!Auth::user()->isRegular()) {
             return Redirect::back()->with('message', trans('login.not_authenticated') );
@@ -33,14 +33,14 @@ Route::filter('regular_user', function(){
     }
 });
 
-Route::filter('admin.auth', function()
+Route::middleware('admin.auth', function ()
 {
     if (Auth::guest()) {
         return Redirect::to('login');
     }
 });
 
-Route::filter('un_auth', function()
+Route::middleware('un_auth', function ()
 {
     if (!Auth::guest()) {
         Auth::logout();
@@ -80,6 +80,9 @@ Route::group(array('before' => 'admin.auth'), function()
 //      Route::post('upload', array('uses' => 'HomeController@uploadOfferImage'));
         Route::resource('roles', 'RolesController');
         Route::resource('users', 'UsersController');
+
+        Route::get('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@edit_profile'));
+        Route::get('users/{users}/edit_notes', array('as' => 'users.edit_notes', 'uses' => 'UsersController@edit_notes'));
     });
 
     // Routes only for registered users

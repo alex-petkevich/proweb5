@@ -7,7 +7,7 @@
     @endif
 
     <div class="col-xs-5">
-        @if (!$user->id)
+    @if (!$user->id)
             <h1 class="page-header">{!! trans('users.create_user') !!}</h1>
             {!! Form::open(array('route' => 'users.store', 'role' => 'form')) !!}
         @else
@@ -17,9 +17,12 @@
 
             @if ($user->id)
         <ul class="nav nav-pills">
-            <li role="presentation" class="active">{!! link_to_route('users.edit', trans('users.tabs-general')) !!}</li>
-            <li role="presentation">{!! link_to_route('users.edit_profile', trans('users.tabs-profile')) !!}</li>
-            <li role="presentation">{!! link_to_route('users.edit_notes', trans('users.tabs-notes')) !!}</li>
+            <li role="presentation"
+                @if (Route::current()->getName() == 'users.edit') class="active"@endif>{!! link_to_route('users.edit', trans('users.tabs-general'), array($user->id)) !!}</li>
+            <li role="presentation"
+                @if (Route::current()->getName() == 'users.edit_profile') class="active"@endif>{!! link_to_route('users.edit_profile', trans('users.tabs-profile'), array($user->id)) !!}</li>
+            <li role="presentation"
+                @if (Route::current()->getName() == 'users.edit_notes') class="active"@endif>{!! link_to_route('users.edit_notes', trans('users.tabs-notes'), array($user->id)) !!}</li>
         </ul>
         <br/>
             @endif
