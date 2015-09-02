@@ -14,6 +14,7 @@ table form { margin-bottom: 0; }
 form ul { margin-left: 0; list-style: none; }
 .error { color: red; font-style: italic; }
 input, textarea, .uneditable-input {width: 50%; min-width: 200px;}
+input[type=checkbox] {width: 1%; min-width: 1px;}
 
 .form-signup {
     max-width: 400px;

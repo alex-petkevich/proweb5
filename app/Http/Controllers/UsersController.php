@@ -175,21 +175,20 @@ class UsersController extends BaseController
 
       //if ($validation->passes()) {
 
-         if ($input['password']) {
+         if (!empty($input['password'])) {
             $user->password = Hash::make($input['password']);
          }
-
+         
          $user->active = (isset($input['active']) && $input['active']  ? 1 : 0);
+         
          $user->save();
 
          $roles = array();
-
          foreach (explode(', ', Input::get('roles')) as $role_name) {
             if ($role = Role::where('role', '=', $role_name)->first()) {
                $roles[] = $role->id;
             }
          }
-
          $user->roles()->sync($roles);
 
          return Redirect::route('users.index');
@@ -200,6 +199,24 @@ class UsersController extends BaseController
          ->withErrors($validation)
          ->with('message', trans('validation.errors'));*/
 
+   }
+
+   /**
+    * Update notes tab
+    * 
+    * @param type $id
+    * @return type
+    */
+   public function update_notes($id) {
+      $user = $this->user->findOrFail($id);
+      $input = Input::all();
+
+      $user->description = $input['description'];
+      $user->save();
+
+      return Redirect::route('users.edit_notes', $id)
+               ->withInput()
+               ->with('message', trans('validation.success'));
    }
 
    /**

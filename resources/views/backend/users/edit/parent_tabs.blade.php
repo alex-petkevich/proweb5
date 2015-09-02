@@ -12,7 +12,7 @@
             {!! Form::open(array('route' => 'users.store', 'role' => 'form')) !!}
         @else
             <h1 class="page-header">{!! trans('users.edit_user') !!}</h1>
-            {!! Form::model($user, array('method' => 'PATCH', 'route' => array('users.update', $user->id), 'role' => 'form')) !!}
+            {!! Form::model($user, array('method' => 'PATCH', 'route' => array(Route::current()->getName(), $user->id), 'role' => 'form')) !!}
         @endif
 
             @if ($user->id)
