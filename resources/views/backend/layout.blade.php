@@ -2,16 +2,24 @@
 <html>
 <head>
    <meta charset="utf-8">
-   <link rel="stylesheet" href="{!! asset('vendor/bootstrap/css/bootstrap.min.css') !!}">
+    <link href="{!! asset('vendor/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet">
    <link href="{!! asset('vendor/jquery/jquery-ui.css') !!}" rel="stylesheet">
-   <link rel="stylesheet" type="text/css" href="{!! asset('css/sb-admin.css') !!}">
+    <link href="{!! asset('css/sb-admin.css')!!}" rel="stylesheet" type="text/css">
    <link href="{!! asset('vendor/font-awesome-4.1.0/css/font-awesome.min.css') !!}" rel="stylesheet" type="text/css">
-   <!--[if lt IE 9]>
-       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <link href="{!! asset('vendor/bootstrap/css/bootstrap-datetimepicker.css') !!}" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="{!! asset('vendor/bootstrap/js/html5shiv.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('vendor/bootstrap/js/respond.min.js') !!}"></script>
    <![endif]-->
 
    @yield('styles')
+
+    <script type="text/javascript" src="{!! asset('vendor/jquery/jquery.min.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('vendor/jquery/jquery-ui.min.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('vendor/bootstrap/js/bootstrap.min.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('vendor/bootstrap/js/moment-with-locales.js') !!}"></script>
+    <script type="text/javascript" src="{!! asset('vendor/bootstrap/js/bootstrap-datetimepicker.js') !!}"></script>
 </head>
 
 <body>
@@ -78,10 +86,8 @@
     </div>
 </div>
 
-<script type="text/javascript" src="{!! asset('vendor/jquery/jquery.min.js') !!}"></script>
-<script type="text/javascript" src="{!! asset('vendor/jquery/jquery-ui.min.js') !!}"></script>
-<script type="text/javascript" src="{!! asset('vendor/bootstrap/js/bootstrap.min.js') !!}"></script>
-<script src="{!! asset('js/admin.js') !!}"></script>
+
+ <script src="{!! asset('js/admin.js') !!}"></script>
 @yield('scripts')
 
 </body>

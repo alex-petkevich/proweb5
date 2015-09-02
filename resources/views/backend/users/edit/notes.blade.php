@@ -8,5 +8,4 @@
         {!! Form::textarea('description', $user->description, array('class' => 'form-control')) !!}
     </div>
 
-    {!! Form::hidden('description', $user->description, array('class' => 'form-control')) !!}
 @stop

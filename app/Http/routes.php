@@ -83,6 +83,7 @@ Route::group(array('before' => 'admin.auth'), function()
 
         Route::get('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@edit_profile'));
         Route::get('users/{users}/edit_notes', array('as' => 'users.edit_notes', 'uses' => 'UsersController@edit_notes'));
+        Route::patch('users/{users}/edit', array('as' => 'users.edit', 'uses' => 'UsersController@update'));
         Route::patch('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@update_profile'));
         Route::patch('users/{users}/edit_notes', array('as' => 'users.edit_notes', 'uses' => 'UsersController@update_notes'));
         

@@ -34,8 +34,8 @@
     </div>
 
     <div class="form-group @if ($errors->has('active')) has-error has-feedback @endif">
+        {!! Form::checkbox('active','1',$user->active, array('id' => 'active')) !!}
       {!! Form::label('active', trans('users.active'), array('class' => 'control-label')) !!}
-      {!! Form::checkbox('active','1',array('class' => 'form-control')) !!}
     </div>
 
 

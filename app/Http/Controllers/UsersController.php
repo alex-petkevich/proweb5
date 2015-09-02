@@ -192,12 +192,6 @@ class UsersController extends BaseController
          $user->roles()->sync($roles);
 
          return Redirect::route('users.index');
-      /*}
-
-      return Redirect::route('users.edit',$id)
-         ->withInput()
-         ->withErrors($validation)
-         ->with('message', trans('validation.errors'));*/
 
    }
 
