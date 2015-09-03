@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+   <title>Proweb Backend</title>
    <meta charset="utf-8">
     <link href="{!! asset('vendor/bootstrap/css/bootstrap.min.css') !!}" rel="stylesheet">
    <link href="{!! asset('vendor/jquery/jquery-ui.css') !!}" rel="stylesheet">

@@ -1,7 +1,7 @@
 <?php
 
-class UsersController extends BaseController
-{
+class UsersController extends BaseController {
+
    /**
     * User Repository
     *
@@ -10,9 +10,9 @@ class UsersController extends BaseController
    protected $user;
    protected $dates = ['deleted_at'];
 
+   const UPLOAD_DIR = '/uploaded/users';
 
-   public function __construct(User $user)
-   {
+   public function __construct(User $user) {
       $this->user = $user;
    }
 
@@ -21,15 +21,14 @@ class UsersController extends BaseController
     *
     * @return Response
     */
-   public function index()
-   {
-      $filter = array_fill_keys($this->user->getAllColumnsNames(),"");
+   public function index() {
+      $filter = array_fill_keys($this->user->getAllColumnsNames(), "");
       $stop_fields = array('filter');
 
       $input = Input::all();
       if (isset($input['filter']) && $input['filter'] == 'apply') {
-         $filter = array_merge($filter,$input);
-         Session::put("USER_FILTER",$filter);
+         $filter = array_merge($filter, $input);
+         Session::put("USER_FILTER", $filter);
       }
 
       if (isset($input['filter']) && $input['filter'] == 'reset') {
@@ -49,19 +48,19 @@ class UsersController extends BaseController
       if (Session::has('USER_FILTER')) {
          $filter = Session::get('USER_FILTER');
 
-         $users = $this->user->where('id','>','0');
+         $users = $this->user->where('id', '>', '0');
 
-         foreach($filter as $k=>$v) {
-            if (!in_array($k,$stop_fields) && $v!='')
-               $users = $users->where($k, 'like', '%'.$v.'%');
+         foreach ($filter as $k => $v) {
+            if (!in_array($k, $stop_fields) && $v != '') {
+               $users = $users->where($k, 'like', '%' . $v . '%');
+            }
          }
 
          if (Session::has('USER_SORT')) {
             $users = $users->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : '');
          }
-         
-         $users = $users->paginate(Config::get('view.paginate-qty'));
 
+         $users = $users->paginate(Config::get('view.paginate-qty'));
       } else {
          if (Session::has('USER_SORT') && $sort['value'] != '') {
             $users = $this->user->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : 'asc');
@@ -73,16 +72,28 @@ class UsersController extends BaseController
 
       $sort_options = User::getSortOptions();
 
-      return View::make('backend.users.index', compact('users','filter','sort_options','sort'));
+      return View::make('backend.users.index', compact('users', 'filter', 'sort_options', 'sort'));
    }
 
-   public function create()
-   {
+   public function uploadAvatarImage() {
+      $rules = array('file' => 'mimes:jpeg,png');
+      $validator = Validator::make(Input::all(), $rules);
+      if ($validator->fails()) {
+         return Response::json(array('message' => $validator->messages()->first('file')));
+      }
+      $dir = self::UPLOAD_DIR . '/images' . date('/Y/m/d/');
+      do {
+         $filename = str_random(30) . '.jpg';
+      } while (File::exists(public_path() . $dir . $filename));
+      Input::file('file')->move(public_path() . $dir, $filename);
+      return Response::json(array('filelink' => $dir . $filename));
+   }
+
+   public function create() {
       $user = $this->user;
 
       return View::make('backend.users.edit.general', compact('user'));
    }
-
 
    /**
     * Display the specified resource.
@@ -90,8 +101,7 @@ class UsersController extends BaseController
     * @param  int $id
     * @return Response
     */
-   public function show($id)
-   {
+   public function show($id) {
       $user = $this->user->findOrFail($id);
 
       return View::make('backend.users.show', compact('user'));
@@ -103,39 +113,34 @@ class UsersController extends BaseController
     * @param  int $id
     * @return Response
     */
-   public function edit($id)
-   {
+   public function edit($id) {
       $user = $this->user->findOrFail($id);
 
       return View::make('backend.users.edit.general', compact('user'));
    }
 
-   public function edit_profile($id)
-   {
+   public function edit_profile($id) {
       $user = $this->user->findOrFail($id);
 
       return View::make('backend.users.edit.profile', compact('user'));
    }
 
-   public function edit_notes($id)
-   {
+   public function edit_notes($id) {
       $user = $this->user->findOrFail($id);
 
       return View::make('backend.users.edit.notes', compact('user'));
    }
 
-   public function store()
-   {
+   public function store() {
       $input = Input::all();
       $validation = Validator::make($input, User::$rules);
 
-      if ($validation->passes())
-      {
+      if ($validation->passes()) {
          $user = new User;
          $user->email = Input::get('email');
          $user->username = Input::get('username');
          $user->password = Hash::make(Input::get('password'));
-         $user->active = (isset($input['active']) && $input['active']  ? 1 : 0);
+         $user->active = (isset($input['active']) && $input['active'] ? 1 : 0);
          $user->save();
 
          $roles = array();
@@ -156,9 +161,9 @@ class UsersController extends BaseController
       }
 
       return Redirect::route('users.create')
-         ->withInput()
-         ->withErrors($validation)
-         ->with('message', trans('validation.errors'));
+                  ->withInput()
+                  ->withErrors($validation)
+                  ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -167,32 +172,29 @@ class UsersController extends BaseController
     * @param  int $id
     * @return Response
     */
-   public function update($id)
-   {
+   public function update($id) {
       $user = $this->user->findOrFail($id);
       $input = Input::all();
       //$validation = Validator::make($input, User::$rules);
-
       //if ($validation->passes()) {
 
-         if (!empty($input['password'])) {
-            $user->password = Hash::make($input['password']);
+      if (!empty($input['password'])) {
+         $user->password = Hash::make($input['password']);
+      }
+
+      $user->active = (isset($input['active']) && $input['active'] ? 1 : 0);
+
+      $user->save();
+
+      $roles = array();
+      foreach (explode(', ', Input::get('roles')) as $role_name) {
+         if ($role = Role::where('role', '=', $role_name)->first()) {
+            $roles[] = $role->id;
          }
-         
-         $user->active = (isset($input['active']) && $input['active']  ? 1 : 0);
-         
-         $user->save();
+      }
+      $user->roles()->sync($roles);
 
-         $roles = array();
-         foreach (explode(', ', Input::get('roles')) as $role_name) {
-            if ($role = Role::where('role', '=', $role_name)->first()) {
-               $roles[] = $role->id;
-            }
-         }
-         $user->roles()->sync($roles);
-
-         return Redirect::route('users.index');
-
+      return Redirect::route('users.index');
    }
 
    /**
@@ -209,8 +211,30 @@ class UsersController extends BaseController
       $user->save();
 
       return Redirect::route('users.edit_notes', $id)
-               ->withInput()
-               ->with('message', trans('validation.success'));
+                  ->withInput()
+                  ->with('message', trans('validation.success'));
+   }
+
+   /**
+    *  Update profile tab
+    * 
+    * @param type $id
+    * @return type
+    */
+   public function update_profile($id) {
+      $user = $this->user->findOrFail($id);
+      $input = Input::all();
+
+      $user->fullname = $input['fullname'];
+      $user->birthdate = $input['birthdate'];
+      $user->avatar = $input['image'];
+      $user->notifications = (isset($input['notifications']) && $input['notifications'] ? 1 : 0);
+
+      $user->save();
+
+      return Redirect::route('users.edit_profile', $id)
+                  ->withInput()
+                  ->with('message', trans('validation.success'));
    }
 
    /**
@@ -219,23 +243,21 @@ class UsersController extends BaseController
     * @param  int $id
     * @return Response
     */
-   public function destroy($id)
-   {
+   public function destroy($id) {
       $this->user->findOrFail($id)->delete();
 
       return Redirect::route('users.index');
    }
 
-    /**
-     * show edit form for user profile
-     */
-
-    public function editProfile() {
-        $user = Auth::user();
-        if ($user == null) {
-            return Redirect::to('login');
-        }
-        return View::make('backend.users.profile',compact("user"));
-    }
+   /**
+    * show edit form for user profile
+    */
+   public function editProfile() {
+      $user = Auth::user();
+      if ($user == null) {
+         return Redirect::to('login');
+      }
+      return View::make('backend.users.profile', compact("user"));
+   }
 
 }

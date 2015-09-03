@@ -1,4 +1,5 @@
 <?php
+
 return array(
    'create_tag' => 'Создать тэг',
    'username' => 'Имя пользователя:',
@@ -7,6 +8,7 @@ return array(
    'birthdate' => 'Дата рождения:',
    'fullname' => 'ФИО:',
    'notifications' => 'Отправлять уведомления:',
+   'avatar' => 'Изображение',
    'submit' => 'Подтвердить',
    'edit_user' => 'Изменить пользователя',
    'create_user' => 'Создать пользователя',
