@@ -10,7 +10,7 @@ class UsersController extends BaseController {
    protected $user;
    protected $dates = ['deleted_at'];
 
-   const UPLOAD_DIR = '/uploaded/users';
+   const UPLOAD_DIR = '/storage/users';
 
    public function __construct(User $user) {
       $this->user = $user;
@@ -224,6 +224,10 @@ class UsersController extends BaseController {
    public function update_profile($id) {
       $user = $this->user->findOrFail($id);
       $input = Input::all();
+
+      if ($user->avatar && $user->avatar != $input['image'] && File::exists($user->avatar)) {
+         File::delete($user->avatar);
+      }
 
       $user->fullname = $input['fullname'];
       $user->birthdate = $input['birthdate'];
