@@ -75,6 +75,11 @@ class UsersController extends BaseController {
       return View::make('backend.users.index', compact('users', 'filter', 'sort_options', 'sort'));
    }
 
+   /**
+    * Save uploaded avatar image
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
    public function uploadAvatarImage() {
       $rules = array('file' => 'mimes:jpeg,png');
       $validator = Validator::make(Input::all(), $rules);
@@ -87,6 +92,26 @@ class UsersController extends BaseController {
       } while (File::exists(public_path() . $dir . $filename));
       Input::file('file')->move(public_path() . $dir, $filename);
       return Response::json(array('filelink' => $dir . $filename));
+   }
+
+
+   public function updateState()
+   {
+      $rules = array('id' => 'numeric');
+      $validator = Validator::make(Input::all(), $rules);
+      if ($validator->fails()) {
+         return Response::json(array('status' => 'error',
+            'message' => $validator->messages()->first('id')));
+      }
+      $input = Input::all();
+
+      $user = $this->user->findOrFail($input['id']);
+      if ($user->id) {
+         $user->active = !$user->active;
+         $user->save();
+      }
+
+      return Response::json(array('status' => 'ok'));
    }
 
    public function create() {

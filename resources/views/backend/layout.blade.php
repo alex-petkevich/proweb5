@@ -56,6 +56,10 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                <ul class="nav navbar-nav side-nav">
                   <li @if(Request::path() == 'roles') class="active"@endif>
+                     <a href="{!! route('settings.index') !!}"><i
+                                class="glyphicon glyphicon-list"></i> {{{ trans('general.settings') }}}</a>
+                  </li>
+                  <li @if(Request::path() == 'roles') class="active"@endif>
                        <a href="{!! route('roles.index') !!}"><i class="glyphicon glyphicon-list"></i> {{{ trans('general.roles') }}}</a>
                   </li>
                   <li @if(Request::path() == 'users') class="active"@endif>

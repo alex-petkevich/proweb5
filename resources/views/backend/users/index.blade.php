@@ -72,8 +72,10 @@
 
    <tbody>
       @foreach ($users as $user)
-      <tr @if (!$user->active) class="tr-disabled" @endif>
-           <td><img src="{!! Croppa::url($user->avatar, 50, null) !!}" id="thumb" style="max-width:50px; max-height: 50px;@if ($user->avatar == '') display: none;@endif"  class="img-thumbnail"></td>
+         <tr @if (!$user->active) class="tr-disabled" @endif id="tr-{!! $user->id !!}">
+            <td><img src="{!! Croppa::url($user->avatar, 50, null) !!}" id="thumb"
+                     style="max-width:50px; max-height: 50px;@if ($user->avatar == '') display: none;@endif"
+                     class="img-thumbnail"></td>
          <td>{{{ $user->username }}}</td>
          <td>{{{ $user->email }}}</td>
          <td>
@@ -108,7 +110,27 @@
       });
    });
    function changeActive(el, state) {
-      alert(this.value);
+      var user_id = this.value;
+      var data = new FormData();
+      data.append('id', user_id);
+      data.append('active', state);
+      $.ajax({
+         url: '/users/update_state',
+         type: 'POST',
+         data: data,
+         processData: false,
+         contentType: false,
+         dataType: 'json',
+         success: function (result) {
+            if (state)
+               $("#tr-" + user_id).removeClass("tr-disabled");
+            else
+               $("#tr-" + user_id).addClass("tr-disabled");
+         },
+         error: function (result) {
+
+         }
+      });
    }
 </script>
 @stop

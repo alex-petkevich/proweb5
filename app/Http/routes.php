@@ -72,6 +72,8 @@ Route::group(array('before' => 'admin.auth'), function() {
 //      Route::post('upload', array('uses' => 'HomeController@uploadOfferImage'));
       Route::resource('roles', 'RolesController');
       Route::resource('users', 'UsersController');
+      Route::resource('settings', 'SettingsController');
+
 
       Route::get('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@edit_profile'));
       Route::get('users/{users}/edit_notes', array('as' => 'users.edit_notes', 'uses' => 'UsersController@edit_notes'));
@@ -79,6 +81,7 @@ Route::group(array('before' => 'admin.auth'), function() {
       Route::patch('users/{users}/edit_notes', array('as' => 'users.edit_notes', 'uses' => 'UsersController@update_notes'));
       Route::patch('users/{users}/edit', array('as' => 'users.edit', 'uses' => 'UsersController@update'));
       Route::post('upload', array('uses' => 'UsersController@uploadAvatarImage'));
+      Route::post('users/update_state', array('uses' => 'UsersController@updateState'));
    });
 
    // Routes only for registered users
