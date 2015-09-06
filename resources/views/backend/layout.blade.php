@@ -39,6 +39,10 @@
             </div>
             @if(!Auth::guest())
             <ul class="nav navbar-right top-nav">
+               <li @if(Request::path() == 'settings') class="active"@endif>
+                  <a href="{!! route('settings.index') !!}"><i
+                             class="glyphicon glyphicon-cog"></i></a>
+               </li>
                <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{{ Auth::user()->username }}} <b class="caret"></b></a>
                   <ul class="dropdown-menu" role="menu">
@@ -55,11 +59,8 @@
 
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                <ul class="nav navbar-nav side-nav">
-                  <li @if(Request::path() == 'roles') class="active"@endif>
-                     <a href="{!! route('settings.index') !!}"><i
-                                class="glyphicon glyphicon-list"></i> {{{ trans('general.settings') }}}</a>
-                  </li>
-                  <li @if(Request::path() == 'roles') class="active"@endif>
+
+               <li @if(Request::path() == 'roles') class="active"@endif>
                        <a href="{!! route('roles.index') !!}"><i class="glyphicon glyphicon-list"></i> {{{ trans('general.roles') }}}</a>
                   </li>
                   <li @if(Request::path() == 'users') class="active"@endif>
