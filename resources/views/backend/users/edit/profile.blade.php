@@ -37,7 +37,7 @@
    @if ($errors->has('file')) <span class="glyphicon glyphicon-remove form-control-feedback"></span> @endif
    <img src="{!! Croppa::url($user->avatar, 100, null) !!}" id="thumb" style="max-width:300px; max-height: 200px;@if ($user->avatar == '') display: none;@endif"  class="img-thumbnail">
    {!! Form::hidden('image', $user->avatar) !!}
-   <div class="error"></div>
+   <div class="error alert alert-danger" style="display: none;"></div>
 </div>
 
 <div class="checkbox @if ($errors->has('notifications')) has-error has-feedback @endif">

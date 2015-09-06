@@ -26,7 +26,7 @@
                }
             },
             error: function (result) {
-               error.text("{{ trans('offers.upload_error') }}");
+               error.text("{{ trans('users.upload_error') }}");
                error.show();
             }
          });
