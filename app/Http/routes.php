@@ -64,16 +64,14 @@ Route::group(array('before' => 'un_auth'), function() {
    Route::post('password/reset/{token}', array('uses' => 'LoginController@resetPassword'));
 });
 
-Route::group(array('before' => 'admin.auth'), function() {
+Route::group(array('after' => 'admin.auth'), function() {
    Route::get('dashboard', array('as' => 'login.dashboard', 'uses' => 'LoginController@dashboard'));
 
    Route::group(array('before' => 'admin_role_only'), function() {
       // admin routes
-//      Route::post('upload', array('uses' => 'HomeController@uploadOfferImage'));
       Route::resource('roles', 'RolesController');
       Route::resource('users', 'UsersController');
-      Route::resource('settings', 'SettingsController');
-
+      Route::resource('settings', 'SettingsController', ['except' => ['show']]);
 
       Route::get('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@edit_profile'));
       Route::get('users/{users}/edit_notes', array('as' => 'users.edit_notes', 'uses' => 'UsersController@edit_notes'));
@@ -82,6 +80,9 @@ Route::group(array('before' => 'admin.auth'), function() {
       Route::patch('users/{users}/edit', array('as' => 'users.edit', 'uses' => 'UsersController@update'));
       Route::post('upload', array('uses' => 'UsersController@uploadAvatarImage'));
       Route::post('users/update_state', array('uses' => 'UsersController@updateState'));
+
+      Route::get('settings/index_payment', array('as' => 'settings.index_payment', 'uses' => 'SettingsController@index_payment'));
+      Route::patch('settings', array('as' => 'settings', 'uses' => 'SettingsController@update'));
    });
 
    // Routes only for registered users
