@@ -8,7 +8,29 @@ class Settings extends BaseModel
 
    protected $guarded = array();
 
+   public $timestamps = false;
+
+   const TTL_CACHE = 10;
+
    public static $rules = array(
-      'name' => 'required|alpha|min:1|max:200|unique:settings,name'
+      'name' => 'required|min:1|max:200'
    );
+
+   public static function getValue($key)
+   {
+      if (Cache::has($key)) {
+         return Cache::get($key);
+      }
+
+      $val = Settings::where('name', '=', $key)->first();
+
+      Cache::put($key, $val->value, self::TTL_CACHE);
+
+      return $val->value;
+   }
+
+   public static function clearCache()
+   {
+      Cache::flush();
+   }
 }

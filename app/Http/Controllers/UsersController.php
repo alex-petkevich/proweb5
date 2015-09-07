@@ -67,7 +67,7 @@ class UsersController extends BaseController {
          } else {
             $users = $this->user;
          }
-         $users = $users->paginate(Config::get('view.paginate-qty'));
+         $users = $users->paginate(Settings::getValue('TABLE_ELEMENTS'));
       }
 
       $sort_options = User::getSortOptions();

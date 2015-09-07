@@ -21,7 +21,7 @@ class RolesController extends BaseController {
 	 */
 	public function index()
 	{
-		$roles = $this->role->paginate(Config::get('view.paginate-qty'));
+		$roles = $this->role->paginate(Settings::getValue('TABLE_ELEMENTS'));
       
       if (Request::ajax()) {
          $roles = Role::where('role', 'like', '%'.Input::get('term', '').'%')->get(array('id', 'role'));

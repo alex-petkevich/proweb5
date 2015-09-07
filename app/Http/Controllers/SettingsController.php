@@ -68,7 +68,7 @@ class SettingsController extends BaseController {
             $setting = $this->settings->where('name', '=', $k)->first();
             if (!empty($setting->id)) {
                $setting->value = $v;
-               $validation = Validator::make($setting, Role::$rules);
+               $validation = Validator::make($setting->toArray(), Settings::$rules);
                if ($validation->passes()) {
                   $setting->save();
                }
@@ -77,12 +77,15 @@ class SettingsController extends BaseController {
       }
 
       if (!isset($validation) || $validation->passes()) {
+         Settings::clearCache();
+         
          return Redirect::route('settings.index')
                      ->with('message', trans('validation.success'));
       }
 
       return Redirect::route('settings.index')
-                  ->with('message', trans('validation.errors'));
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
    }
 
    /**
