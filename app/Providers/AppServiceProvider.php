@@ -17,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
         require app_path().'/Helpers/validators.php';
         require app_path().'/Helpers/Macros/bootstrap3.php';
         require app_path().'/Helpers/Macros/general.php';
+        require app_path().'/Helpers/Blogify.php';
 
     }
 

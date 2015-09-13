@@ -8,17 +8,29 @@ class RolesTableSeeder extends Seeder {
    {
        $roles = array(
          array(
-            'role' => 'admin',
+            'role' => 'Admin',
             'description' => 'Administrative privileges',
             'updated_at' => DB::raw('NOW()'),
             'created_at' => DB::raw('NOW()')
          ),
          array(
-            'role' => 'member',
+            'role' => 'Member',
             'description' => 'Registered members',
             'updated_at' => DB::raw('NOW()'),
             'created_at' => DB::raw('NOW()')
          ),
+          array(
+             'role' => 'Reviewer',
+             'description' => 'Articles reviewer',
+             'updated_at' => DB::raw('NOW()'),
+             'created_at' => DB::raw('NOW()')
+          ),
+          array(
+             'role' => 'Author',
+             'description' => 'Authors',
+             'updated_at' => DB::raw('NOW()'),
+             'created_at' => DB::raw('NOW()')
+          )
       );
 
       DB::table('roles')->insert($roles);

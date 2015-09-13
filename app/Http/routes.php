@@ -87,3 +87,161 @@ Route::group(array('after' => 'admin.auth'), function() {
 
    // Routes only for registered users
 });
+
+
+// blogify routes
+
+$use_default_routes = config('blogify.enable_default_routes');
+
+if ($use_default_routes) {
+   Route::group(['namespace' => 'App\Http\Controllers'], function() {
+      Route::resource('blog', 'BlogController', ['only' => ['index', 'show']]);
+      Route::post('blog/{slug}', [
+         'as' => 'blog.confirmPass',
+         'uses' => 'BlogController@show',
+      ]);
+      Route::get('blog/archive/{year}/{month}', [
+         'as' => 'blog.archive',
+         'uses' => 'BlogController@archive'
+      ]);
+      Route::get('blog/category/{category}', [
+         'as' => 'blog.category',
+         'uses' => 'BlogController@category',
+      ]);
+      Route::get('blog/protected/verify/{hash}', [
+         'as' => 'blog.askPassword',
+         'uses' => 'BlogController@askPassword'
+      ]);
+      Route::post('comments', [
+         'as' => 'comments.store',
+         'uses' => 'CommentsController@store'
+      ]);
+   });
+}
+///////////////////////////////////////////////////////////////////////////
+// Logged in user routes
+///////////////////////////////////////////////////////////////////////////
+
+Route::group(['prefix' => 'auth'], function()
+{
+
+   Route::group(['middleware' => 'auth'], function()
+   {
+
+   });
+
+});
+
+
+///////////////////////////////////////////////////////////////////////////
+// Admin routes
+///////////////////////////////////////////////////////////////////////////
+
+$admin = [
+   'prefix'    => 'admin',
+   'namespace' =>'Controllers\Admin',
+];
+
+
+Route::group($admin, function()
+{
+
+   Route::group(['middleware' => 'BlogifyAdminAuthenticate'], function()
+   {
+      // Dashboard
+      Route::get('/', [
+         'as'    => 'admin.dashboard',
+         'uses'  => 'DashboardController@index'
+      ]);
+
+      /**
+       *
+       * Post routes
+       */
+      Route::resource('posts', 'PostsController', [
+         'except' => 'store', 'update'
+      ]);
+      Route::post('posts', [
+         'as'     => 'admin.posts.store',
+         'uses'  => 'PostsController@store'
+      ]);
+      Route::post('posts/image/upload', [
+         'as'    => 'admin.posts.uploadImage',
+         'uses'  => 'PostsController@uploadImage',
+      ]);
+      Route::get('posts/overview/{trashed?}', [
+         'as'    => 'admin.posts.overview',
+         'uses'  => 'PostsController@index',
+      ]);
+      Route::get('posts/action/cancel/{hash?}', [
+         'as'    => 'admin.posts.cancel',
+         'uses'  => 'PostsController@cancel',
+      ]);
+      Route::get('posts/{hash}/restore', [
+         'as' => 'admin.posts.restore',
+         'uses' => 'PostsController@restore'
+      ]);
+
+      Route::group(['middleware' => 'HasAdminOrAuthorRole'], function() {
+         Route::resource('tags', 'TagsController', [
+            'except'    => 'store'
+         ]);
+         Route::post('tags', [
+            'as'    => 'admin.tags.store',
+            'uses'  => 'TagsController@storeOrUpdate'
+         ]);
+         Route::get('tags/overview/{trashed?}', [
+            'as'    => 'admin.tags.overview',
+            'uses'  => 'TagsController@index',
+         ]);
+         Route::get('tags/{hash}/restore', [
+            'as' => 'admin.tags.restore',
+            'uses' => 'TagsController@restore'
+         ]);
+
+         Route::get('comments/{revised?}', [
+            'as'    => 'admin.comments.index',
+            'uses'  => 'CommentsController@index'
+         ]);
+         Route::get('comments/changestatus/{hash}/{revised}', [
+            'as'    => 'admin.comments.changeStatus',
+            'uses'  => 'CommentsController@changeStatus'
+         ]);
+      });
+
+      Route::resource('profile', 'ProfileController');
+
+      ///////////////////////////////////////////////////////////////////////////
+      // API routes
+      ///////////////////////////////////////////////////////////////////////////
+
+      $api = [
+         'prefix' => 'api',
+      ];
+
+      Route::group($api, function()
+      {
+         Route::get('sort/{table}/{column}/{order}/{trashed?}', [
+            'as'    => 'admin.api.sort',
+            'uses'  => 'ApiController@sort'
+         ]);
+
+         Route::get('slug/checkIfSlugIsUnique/{slug}', [
+            'as'    => 'admin.api.slug.checkIfUnique',
+            'uses'  => 'ApiController@checkIfSlugIsUnique',
+         ]);
+
+         Route::post('autosave', [
+            'as'    => 'admin.api.autosave',
+            'uses'  => 'ApiController@autoSave',
+         ]);
+
+         Route::get('tags/{hash}', [
+            'as' => 'admin.api.tags',
+            'uses' => 'ApiController@getTag'
+         ]);
+      });
+
+   });
+
+});

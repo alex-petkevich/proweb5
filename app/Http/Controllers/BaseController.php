@@ -1,13 +1,22 @@
 <?php
 
+use Illuminate\Contracts\Auth\Guard;
+
 class BaseController extends Controller {
 
-
-    /**
-     * Setup the layout used by the controller.
-     *
-     * @return void
-     */
+    protected $auth;
+    
+    protected $auth_user;
+    
+    protected $config;
+    
+    public function __construct(Guard $auth)
+    {
+        $this->auth = $auth;
+        $this->config = objectify(config('blogify'));
+        $this->auth_user = $this->auth->check() ? $this->auth->user() : false;
+    }
+    
     protected function setupLayout()
     {
         if ( ! is_null($this->layout))
