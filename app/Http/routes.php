@@ -64,6 +64,10 @@ Route::group(array('before' => 'un_auth'), function() {
    Route::post('password/reset/{token}', array('uses' => 'LoginController@resetPassword'));
 });
 
+Route::resource('blog', 'BlogController');
+Route::resource('pages', 'PagesController');
+Route::resource('posts', 'PostsController');
+
 Route::group(array('after' => 'admin.auth'), function() {
    Route::get('dashboard', array('as' => 'login.dashboard', 'uses' => 'LoginController@dashboard'));
 

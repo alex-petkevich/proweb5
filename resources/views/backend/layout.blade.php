@@ -47,7 +47,8 @@
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{{ Auth::user()->username }}} <b class="caret"></b></a>
                   <ul class="dropdown-menu" role="menu">
                      <li>
-                        <a href="{!! route('user.profile') !!}"><i class="fa fa-fw fa-user"></i> Profile</a>
+                        <a href="{!! route('user.profile') !!}"><i
+                                   class="fa fa-fw fa-user"></i> {!! trans('general.profile') !!}</a>
                      </li>
                      <li class="divider"></li>
                      <li>
@@ -59,8 +60,18 @@
 
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                <ul class="nav navbar-nav side-nav">
+                  <li @if(Request::path() == 'pages') class="active"@endif>
+                     <a href="{!! route('pages.index') !!}"><i
+                                class="glyphicon glyphicon-edit"></i> {{{ trans('general.pages') }}}</a>
+                  </li>
 
-               <li @if(Request::path() == 'roles') class="active"@endif>
+                  <li @if(Request::path() == 'posts') class="active"@endif>
+                     <a href="{!! route('posts.index') !!}"><i
+                                class="glyphicon glyphicon-book"></i> {{{ trans('general.posts') }}}</a>
+                  </li>
+
+
+                  <li @if(Request::path() == 'roles') class="active"@endif>
                        <a href="{!! route('roles.index') !!}"><i class="glyphicon glyphicon-list"></i> {{{ trans('general.roles') }}}</a>
                   </li>
                   <li @if(Request::path() == 'users') class="active"@endif>
