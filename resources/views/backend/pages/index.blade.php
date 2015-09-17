@@ -6,7 +6,7 @@
 
     <p>
         <a href="{!! route('pages.create') !!}" class="btn btn-success"
-           title="{!! trans('pages.add_new_page') !!}"><span
+           title="{!! trans('pages.add_new_page') !!}" id="create_button"><span
                     class="glyphicon glyphicon-plus"></span> {!! trans('pages.add_new_page') !!}</a>
         @if ($pages->count())
             <a href="{!! route('pages.index') !!}" class="btn disabled btn-danger" title="{!! trans('pages.delete') !!}"
@@ -39,4 +39,17 @@
     {!! trans('pages.no_pages') !!}
     @endif
 
+@stop
+
+
+@section('scripts')
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#create_button').click(function () {
+                $('#create_button').prop('href', $('#create_button').prop('href') + '?parent_id=' + $('input[name=id]:checked').val());
+                return true;
+            });
+        });
+    </script>
 @stop
