@@ -1,22 +1,22 @@
 <?php
 
-class PagesController extends BaseController
-{
+use Illuminate\Http\Request;
+
+class PagesController extends BaseController {
+
    protected $page;
 
-   public function __construct(Page $page)
-   {
+   public function __construct(Page $page) {
       $this->page = $page;
    }
+
    /**
     * Display a listing of the resource.
     *
     * @return \Illuminate\Http\Response
     */
-   public function index()
-   {
-      $pages = $this->page->paginate(Settings::getValue('TABLE_ELEMENTS'));
-
+   public function index() {
+      $pages = $this->page->getTreeArray();
       return View::make('backend.pages.index', compact("pages"));
    }
 
@@ -25,14 +25,21 @@ class PagesController extends BaseController
     *
     * @return \Illuminate\Http\Response
     */
-   public function create()
-   {
-      $pages = $this->page->get();
+   public function create(Request $request) {
+      $page = $this->page;
+      if (!empty($request->input("parent_id"))) {
+         $page->parent_id = $request->input("parent_id");
+      }
+
+      $pages = $this->page->getTreeArray();
+      $pages = $this->alignTreeArray($pages);
+      $pages = $this->flattenTreeArray($pages);
+      dd($pages);
       $catalog = array(0 => trans('pages.no'));
       foreach ($pages as $k => $v) {
          $catalog[$v['id']] = $v['title'];
       }
-      return View::make('backend.pages.create', compact('catalog'));
+      return View::make('backend.pages.create', compact('catalog', 'page'));
    }
 
    /**
@@ -41,8 +48,7 @@ class PagesController extends BaseController
     * @param  \Illuminate\Http\Request $request
     * @return \Illuminate\Http\Response
     */
-   public function store(Request $request)
-   {
+   public function store(Request $request) {
       $input = Input::all();
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
@@ -55,9 +61,9 @@ class PagesController extends BaseController
       }
 
       return Redirect::route('pages.create')
-         ->withInput()
-         ->withErrors($validation)
-         ->with('message', trans('validation.errors'));
+                  ->withInput()
+                  ->withErrors($validation)
+                  ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -66,8 +72,7 @@ class PagesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function show($id)
-   {
+   public function show($id) {
       return View::make('frontend.pages.show');
    }
 
@@ -77,8 +82,7 @@ class PagesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function edit($id)
-   {
+   public function edit($id) {
       return View::make('backend.pages.edit');
    }
 
@@ -89,8 +93,7 @@ class PagesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function update(Request $request, $id)
-   {
+   public function update(Request $request, $id) {
       //
    }
 
@@ -100,8 +103,33 @@ class PagesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function destroy($id)
-   {
+   public function destroy($id) {
       //
    }
+
+   private function alignTreeArray(&$array) {
+
+      foreach ($array as &$element) {
+
+         if (!empty($element['children'])) {
+            $element['children'] = $this->alignTreeArray($element['children']);
+         }
+         $element['title'] = str_repeat('-', $element['shift']) . $element['title'];
+      }
+
+      return $array;
+   }
+
+   private function flattenTreeArray(array &$array) {
+      $return = array();
+      if (!empty($array['children'])) {
+
+         $return = array_merge($return, $this->flattenTreeArray($array['children']));
+      } else {
+         $return = array_merge($return, $array);
+      }
+
+      return $return;
+   }
+
 }
