@@ -72,20 +72,26 @@
 <script src="{!! asset('vendor/tinymce/tinymce.min.js') !!}"></script>
 <script src="{!! asset('vendor/tinymce/jquery.tinymce.min.js') !!}"></script>
 <script type="text/javascript">
-           tinymce.init({
-           selector: "#description",
-                   plugins: [
-                           "advlist autolink link image lists charmap print preview hr anchor pagebreak",
-                           "searchreplace wordcount visualblocks visualchars insertdatetime media nonbreaking",
-                           "table contextmenu directionality emoticons paste textcolor responsivefilemanager"
-                   ],
-                   toolbar1: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | styleselect",
-                   toolbar2: "| responsivefilemanager | link unlink anchor | image media | forecolor backcolor  | print preview code ",
-                   image_advtab: true,
-                   external_filemanager_path: "{!! asset('vendor/filemanager/') !!}/",
-                   filemanager_title: "Менеджер файлов",
-                   external_plugins: {"filemanager": "{!! asset('vendor/filemanager/plugin.min.js') !!}"},
-                   language: "ru"
-           });
+    $(document).ready(function () {
+        $("#active").bootstrapSwitch({
+            'size': 'small'
+        });
+    });
+
+    tinymce.init({
+        selector: "#description",
+        plugins: [
+            "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars insertdatetime media nonbreaking",
+            "table contextmenu directionality emoticons paste textcolor responsivefilemanager"
+        ],
+        toolbar1: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | styleselect",
+        toolbar2: "| responsivefilemanager | link unlink anchor | image media | forecolor backcolor  | print preview code ",
+        image_advtab: true,
+        external_filemanager_path: "{!! asset('vendor/filemanager/') !!}/",
+        filemanager_title: "Менеджер файлов",
+        external_plugins: {"filemanager": "{!! asset('vendor/filemanager/plugin.min.js') !!}"},
+        language: "ru"
+    });
 </script>
 @stop

@@ -20,7 +20,7 @@ return array(
    'meta_description' => 'Мета описание',
    'meta_keywords' => 'Мета ключевые слова',
    'show_title' => 'Показывать заголовок',
-   'active' => 'Активно',
+   'active' => 'Опубликовать',
    'parent_id' => 'Родительская страница',
    'only_for_roles' => 'Доступно только для ролей',
    'description' => 'Текст',

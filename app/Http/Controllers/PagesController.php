@@ -32,9 +32,9 @@ class PagesController extends BaseController {
       }
 
       $pages = $this->page->getTreeArray();
-      $pages = $this->alignTreeArray($pages);
-      $pages = $this->flattenTreeArray($pages);
-      dd($pages);
+      $pages = alignTreeArray($pages, '&nbsp;');
+      $pages = flattenTreeArray($pages);
+
       $catalog = array(0 => trans('pages.no'));
       foreach ($pages as $k => $v) {
          $catalog[$v['id']] = $v['title'];
@@ -55,6 +55,8 @@ class PagesController extends BaseController {
       }
       $validation = Validator::make($input, Page::$rules);
       if ($validation->passes()) {
+         $input['active'] = isset($input['active']) ?: 0;
+         $input['show_title'] = isset($input['show_title']) ?: 0;
          $this->page->create($input);
 
          return Redirect::route('pages.index');
@@ -104,32 +106,10 @@ class PagesController extends BaseController {
     * @return \Illuminate\Http\Response
     */
    public function destroy($id) {
-      //
+      $this->page->where('parent_id', '=', $id)->delete();
+      $this->page->find($id)->delete();
+
+      return Redirect::route('pages.index')
+         ->with('message', trans('validation.success'));
    }
-
-   private function alignTreeArray(&$array) {
-
-      foreach ($array as &$element) {
-
-         if (!empty($element['children'])) {
-            $element['children'] = $this->alignTreeArray($element['children']);
-         }
-         $element['title'] = str_repeat('-', $element['shift']) . $element['title'];
-      }
-
-      return $array;
-   }
-
-   private function flattenTreeArray(array &$array) {
-      $return = array();
-      if (!empty($array['children'])) {
-
-         $return = array_merge($return, $this->flattenTreeArray($array['children']));
-      } else {
-         $return = array_merge($return, $array);
-      }
-
-      return $return;
-   }
-
 }

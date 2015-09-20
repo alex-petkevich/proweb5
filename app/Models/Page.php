@@ -14,26 +14,6 @@ class Page extends BaseModel {
 
    public function getTreeArray($parent_id = 0) {
       $pagesArr = $this->get()->toArray();
-      return $this->buildTree($pagesArr);
+      return buildTree($pagesArr);
    }
-
-   private function buildTree(array &$elements, $parentId = 0, $shift = 0) {
-
-      $branch = array();
-
-      foreach ($elements as &$element) {
-
-         if ($element['parent_id'] == $parentId) {
-            $children = $this->buildTree($elements, $element['id'], $shift + 3);
-            if ($children) {
-               $element['children'] = $children;
-            }
-            $element['shift'] = $shift;
-            $branch[$element['id']] = $element;
-            unset($element);
-         }
-      }
-      return $branch;
-   }
-
 }

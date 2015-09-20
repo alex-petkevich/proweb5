@@ -1,4 +1,4 @@
-<tr>
+<tr @if (!$page['active']) class="tr-disabled" @endif id="tr-{!! $page['id'] !!}">
    <td class="col-md-0">{!! FORM::radio('id',$page['id'],false, array('id'=>'id_'.$page['id'])) !!}</td>
    <td>{!! str_repeat('&nbsp;',$page['shift']) !!} {!! Form::label('id_'.$page['id'], $page['title']) !!}</td>
 </tr>

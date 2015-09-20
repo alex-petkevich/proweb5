@@ -13,6 +13,7 @@ class AppServiceProvider extends ServiceProvider {
     */
    public function boot() {
 
+      require app_path() . '/Helpers/arrays.php';
       require app_path() . '/Helpers/validators.php';
       require app_path() . '/Helpers/Macros/bootstrap3.php';
       require app_path() . '/Helpers/Macros/general.php';
