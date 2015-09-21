@@ -1,8 +1,11 @@
 <?php
+
 return array(
    'create_page' => 'Создать страницу',
    'page' => 'Заголовок',
    'submit' => 'Подтвердить',
+   'submit_draft' => 'Сохранить как черновик',
+   'submit_publish' => 'Опубликовать',
    'edit_page' => 'Изменить страницу',
    'update' => 'Обновить',
    'cancel' => 'Отменить',
@@ -25,5 +28,4 @@ return array(
    'only_for_roles' => 'Доступно только для ролей',
    'description' => 'Текст',
    'no' => '- Нет -',
-
 );

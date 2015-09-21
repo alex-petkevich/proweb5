@@ -31,15 +31,9 @@ class PagesController extends BaseController {
          $page->parent_id = $request->input("parent_id");
       }
 
-      $pages = $this->page->getTreeArray();
-      $pages = alignTreeArray($pages, '&nbsp;');
-      $pages = flattenTreeArray($pages);
+      $catalog = $this->getDocumentTree();
 
-      $catalog = array(0 => trans('pages.no'));
-      foreach ($pages as $k => $v) {
-         $catalog[$v['id']] = $v['title'];
-      }
-      return View::make('backend.pages.create', compact('catalog', 'page'));
+      return View::make('backend.pages.edit', compact('catalog', 'page'));
    }
 
    /**
@@ -55,8 +49,8 @@ class PagesController extends BaseController {
       }
       $validation = Validator::make($input, Page::$rules);
       if ($validation->passes()) {
-         $input['active'] = isset($input['active']) ?: 0;
-         $input['show_title'] = isset($input['show_title']) ?: 0;
+         $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
+         $input['show_title'] = isset($input['show_title']) ? (int) $input['show_title'] : 0;
          $this->page->create($input);
 
          return Redirect::route('pages.index');
@@ -85,7 +79,11 @@ class PagesController extends BaseController {
     * @return \Illuminate\Http\Response
     */
    public function edit($id) {
-      return View::make('backend.pages.edit');
+      $page = $this->page->findOrFail($id);
+
+      $catalog = $this->getDocumentTree();
+
+      return View::make('backend.pages.edit', compact('catalog', 'page'));
    }
 
    /**
@@ -110,6 +108,19 @@ class PagesController extends BaseController {
       $this->page->find($id)->delete();
 
       return Redirect::route('pages.index')
-         ->with('message', trans('validation.success'));
+                  ->with('message', trans('validation.success'));
    }
+
+   private function getDocumentTree() {
+      $pages = $this->page->getTreeArray();
+      $pages = alignTreeArray($pages, '&nbsp;');
+      $pages = flattenTreeArray($pages);
+
+      $catalog = array(0 => trans('pages.no'));
+      foreach ($pages as $k => $v) {
+         $catalog[$v['id']] = $v['title'];
+      }
+      return $catalog;
+   }
+
 }
