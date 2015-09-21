@@ -94,7 +94,24 @@ class PagesController extends BaseController {
     * @return \Illuminate\Http\Response
     */
    public function update(Request $request, $id) {
-      //
+      $input = array_except(Input::all(), array('_method', '_token'));
+      if (empty($input['name'])) {
+         $input['name'] = str_slug($input['title'], '-');
+      }
+      $validation = Validator::make($input, Page::$rules);
+      if ($validation->passes()) {
+         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
+         $input['show_title'] = isset($input['show_title']) ? (int)$input['show_title'] : 0;
+         $page = $this->page->find($id);
+         $page->update($input);
+
+         return Redirect::route('pages.index');
+      }
+
+      return Redirect::route('pages.edit')
+         ->withInput()
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
    }
 
    /**

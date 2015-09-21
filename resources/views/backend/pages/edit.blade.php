@@ -9,47 +9,51 @@
 
 <div class="col-xs-10">
 
-
+    @if ($page->id)
+        <h1 class="page-header">{!! trans('pages.edit_page') !!}</h1>
+        {!! Form::model($page, array('method' => 'PATCH', 'route' => array('pages.update', $page->id), 'page' => 'form')) !!}
+    @else
    <h1 class="page-header">{!! trans('pages.create_page') !!}</h1>
-   {!! Form::open(array('route' => 'pages.store', 'page' => 'form', 'id'=>'mainForm')) !!}
+        {!! Form::open(array('route' => 'pages.store', 'page' => 'form', 'id'=>'mainForm')) !!}
+    @endif    
    <div class="form-group @if ($errors->has('parent_id')) has-error has-feedback @endif">
       {!! Form::label('parent_id', trans('pages.parent_id'), array('class' => 'control-label')) !!}
       {!! Form::select('parent_id',$catalog,$page->parent_id, array('class' => 'form-control')) !!}
    </div>
    <div class="form-group @if ($errors->has('name')) has-error has-feedback @endif">
       {!! Form::label('name', trans('pages.name'), array('class' => 'control-label')) !!}
-      {!! Form::text('name',null, array('class' => 'form-control')) !!}
+       {!! Form::text('name',$page->name, array('class' => 'form-control')) !!}
    </div>
    <div class="form-group @if ($errors->has('title')) has-error has-feedback @endif">
       {!! Form::label('title', trans('pages.page'), array('class' => 'control-label')) !!}
-      {!! Form::text('title',null, array('class' => 'form-control')) !!}
+       {!! Form::text('title',$page->title, array('class' => 'form-control')) !!}
    </div>
 
    <div class="checkbox @if ($errors->has('show_title')) has-error has-feedback @endif">
       <label>
-         {!! Form::checkbox('show_title','1',null, array('id' => 'show_title')) !!}
+          {!! Form::checkbox('show_title','1',$page->show_title, array('id' => 'show_title')) !!}
          {!! trans('pages.show_title') !!}
       </label>
    </div>
    <div class="form-group @if ($errors->has('meta_title')) has-error has-feedback @endif">
       {!! Form::label('meta_title', trans('pages.meta_title'), array('class' => 'control-label')) !!}
-      {!! Form::text('meta_title',null, array('class' => 'form-control')) !!}
+       {!! Form::text('meta_title',$page->meta_title, array('class' => 'form-control')) !!}
    </div>
    <div class="form-group @if ($errors->has('meta_description')) has-error has-feedback @endif">
       {!! Form::label('meta_description', trans('pages.meta_description'), array('class' => 'control-label')) !!}
-      {!! Form::text('meta_description',null, array('class' => 'form-control')) !!}
+       {!! Form::text('meta_description',$page->meta_description, array('class' => 'form-control')) !!}
    </div>
    <div class="form-group @if ($errors->has('meta_keywords')) has-error has-feedback @endif">
       {!! Form::label('meta_keywords', trans('pages.meta_keywords'), array('class' => 'control-label')) !!}
-      {!! Form::text('meta_keywords',null, array('class' => 'form-control')) !!}
+       {!! Form::text('meta_keywords',$page->meta_keywords, array('class' => 'form-control')) !!}
    </div>
    <div class="form-group @if ($errors->has('only_for_roles')) has-error has-feedback @endif">
       {!! Form::label('only_for_roles', trans('pages.only_for_roles'), array('class' => 'control-label')) !!}
-      {!! Form::text('only_for_roles',null, array('class' => 'form-control')) !!}
+       {!! Form::text('only_for_roles',$page->only_for_roles, array('class' => 'form-control')) !!}
    </div>
    <div class="form-group @if ($errors->has('description')) has-error has-feedback @endif">
       {!! Form::label('description', trans('pages.description')) !!}
-      {!! Form::textarea('description',null, array('class' => 'form-control')) !!}
+       {!! Form::textarea('description',$page->description, array('class' => 'form-control')) !!}
    </div>
 
    <div class="form-group">
