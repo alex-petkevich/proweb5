@@ -32,7 +32,7 @@
 </table>
 @else
 </p>
-{!! trans('pages.no_pages') !!}
+{!! trans('blog.posts.no_pages') !!}
 @endif
 
 @stop
@@ -42,11 +42,7 @@
 <script type="text/javascript">
 
    $(document).ready(function () {
-      $('#create_button').click(function () {
-         if ($('input[name=id]:checked').val() != undefined)
-            $('#create_button').prop('href', $('#create_button').prop('href') + '?parent_id=' + $('input[name=id]:checked').val());
-         return true;
-      });
+
    });
 </script>
 @stop
