@@ -66,7 +66,6 @@ Route::group(array('before' => 'un_auth'), function() {
 
 Route::resource('blog', 'BlogController');
 Route::resource('pages', 'PagesController');
-Route::resource('posts', 'PostsController');
 
 Route::group(array('after' => 'admin.auth'), function() {
    Route::get('dashboard', array('as' => 'login.dashboard', 'uses' => 'LoginController@dashboard'));
@@ -75,6 +74,7 @@ Route::group(array('after' => 'admin.auth'), function() {
       // admin routes
       Route::resource('roles', 'RolesController');
       Route::resource('users', 'UsersController');
+      Route::resource('posts', 'BlogPostsController');
       Route::resource('settings', 'SettingsController', ['except' => ['show']]);
 
       Route::get('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@edit_profile'));

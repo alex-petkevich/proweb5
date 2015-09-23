@@ -1,13 +1,11 @@
 <?php
 
-use Illuminate\Http\Request;
+class PostsController extends BaseController {
 
-class PagesController extends BaseController {
+   protected $post;
 
-   protected $page;
-
-   public function __construct(Page $page) {
-      $this->page = $page;
+   public function __construct(Post $post) {
+      $this->post = $post;
    }
 
    /**
@@ -16,8 +14,8 @@ class PagesController extends BaseController {
     * @return \Illuminate\Http\Response
     */
    public function index() {
-      $pages = $this->page->getTreeArray();
-      return View::make('backend.pages.index', compact("pages"));
+      $posts = $this->post->getTreeArray();
+      return View::make('backend.blog.posts.index', compact("posts"));
    }
 
    /**
@@ -25,15 +23,15 @@ class PagesController extends BaseController {
     *
     * @return \Illuminate\Http\Response
     */
-   public function create(Request $request) {
-      $page = $this->page;
-      if (!empty($request->input("parent_id"))) {
-         $page->parent_id = $request->input("parent_id");
-      }
+   public function create() {
+      $post = $this->post;
+      /* if (!empty($request->input("category_id"))) {
+        $post->category_id = $request->input("category_id");
+        }
 
-      $catalog = $this->getDocumentTree();
+        $catalog = $Catalog->getDocumentTree(); */
 
-      return View::make('backend.pages.edit', compact('catalog', 'page'));
+      return View::make('backend.blog.posts.edit', compact('post'));
    }
 
    /**
@@ -47,16 +45,15 @@ class PagesController extends BaseController {
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
-      $validation = Validator::make($input, Page::$rules);
+      $validation = Validator::make($input, Post::$rules);
       if ($validation->passes()) {
          $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
-         $input['show_title'] = isset($input['show_title']) ? (int) $input['show_title'] : 0;
-         $this->page->create($input);
+         $this->post->create($input);
 
-         return Redirect::route('pages.index');
+         return Redirect::route('posts.index');
       }
 
-      return Redirect::route('pages.create')
+      return Redirect::route('posts.create')
                   ->withInput()
                   ->withErrors($validation)
                   ->with('message', trans('validation.errors'));
@@ -69,7 +66,7 @@ class PagesController extends BaseController {
     * @return \Illuminate\Http\Response
     */
    public function show($id) {
-      return View::make('frontend.pages.show');
+      return View::make('frontend.blog.posts.show');
    }
 
    /**
@@ -79,11 +76,11 @@ class PagesController extends BaseController {
     * @return \Illuminate\Http\Response
     */
    public function edit($id) {
-      $page = $this->page->findOrFail($id);
+      $post = $this->post->findOrFail($id);
 
-      $catalog = $this->getDocumentTree();
+//      $catalog = $this->getDocumentTree();
 
-      return View::make('backend.pages.edit', compact('catalog', 'page'));
+      return View::make('backend.blog.posts.edit', compact('post'));
    }
 
    /**
@@ -98,21 +95,20 @@ class PagesController extends BaseController {
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
-      $page = $this->page->find($id);
-      $rules = Page::$rules;
-      if ($page->id) {
-         $rules['name'] = $rules['name'] . ',' . $page->id;
+      $post = $this->post->find($id);
+      $rules = Post::$rules;
+      if ($post->id) {
+         $rules['name'] = $rules['name'] . ', ' . $post->id;
       }
       $validation = Validator::make($input, $rules);
       if ($validation->passes()) {
          $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
-         $input['show_title'] = isset($input['show_title']) ? (int) $input['show_title'] : 0;
-         $page->update($input);
+         $post->update($input);
 
-         return Redirect::route('pages.index');
+         return Redirect::route('posts.index');
       }
 
-      return Redirect::route('pages.edit', $id)
+      return Redirect::route('posts.edit', $id)
                   ->withInput()
                   ->withErrors($validation)
                   ->with('message', trans('validation.errors'));
@@ -125,23 +121,10 @@ class PagesController extends BaseController {
     * @return \Illuminate\Http\Response
     */
    public function destroy($id) {
-      $this->page->where('parent_id', '=', $id)->delete();
       $this->page->find($id)->delete();
 
       return Redirect::route('pages.index')
                   ->with('message', trans('validation.success'));
-   }
-
-   private function getDocumentTree() {
-      $pages = $this->page->getTreeArray();
-      $pages = alignTreeArray($pages, '&nbsp;');
-      $pages = flattenTreeArray($pages);
-
-      $catalog = array(0 => trans('pages.no'));
-      foreach ($pages as $k => $v) {
-         $catalog[$v['id']] = $v['title'];
-      }
-      return $catalog;
    }
 
 }
