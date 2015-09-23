@@ -78,11 +78,6 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
       return empty($roles);
    }
 
-   public function usersOffers()
-   {
-      return $this->belongsToMany('Offer', 'comments')->withPivot('body', 'mark')->withTimestamps();
-   }
-
    /**
     * Get the token value for the "remember me" session.
     *

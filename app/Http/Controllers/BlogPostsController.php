@@ -1,6 +1,7 @@
 <?php
 
-class PostsController extends BaseController {
+class BlogPostsController extends BaseController
+{
 
    protected $post;
 
@@ -14,7 +15,7 @@ class PostsController extends BaseController {
     * @return \Illuminate\Http\Response
     */
    public function index() {
-      $posts = $this->post->getTreeArray();
+      $posts = $this->post->paginate(Settings::getValue('TABLE_ELEMENTS'));
       return View::make('backend.blog.posts.index', compact("posts"));
    }
 
