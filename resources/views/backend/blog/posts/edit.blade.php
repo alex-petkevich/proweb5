@@ -42,10 +42,12 @@
         </div>
         <div class="form-group">
             <button class="btn btn-default btn-block"
-                    id="btn_additional_options">{!! trans('blog_posts.additional_options') !!}</button>
+                    id="btn_additional_options"><span class="glyphicon glyphicon-tasks"
+                                                      aria-hidden="true"></span> {!! trans('blog_posts.additional_options') !!}
+            </button>
         </div>
 
-        <div class="hidden" id="additional_options">
+            <div id="additional_options" style="display:none;">
             <div class="form-group @if ($errors->has('meta_title')) has-error has-feedback @endif">
                 {!! Form::label('meta_title', trans('blog_posts.meta_title'), array('class' => 'control-label')) !!}
                 {!! Form::text('meta_title',$post->meta_title, array('class' => 'form-control')) !!}
@@ -95,8 +97,8 @@
             $('#active').val("1");
             return true;
         });
-        $('#btn_additional_options').on('click', function () {
-            $('#additional_options').show();
+        $('#btn_additional_options').click(function () {
+            $('#additional_options').toggle(1000);
             return false;
         });
         tinymce.init({
@@ -164,6 +166,40 @@
                             return false;
                         }
                     });
+
+            var uploadInput = $('#file'),
+                    imageInput = $('[name="image"]'),
+                    thumb = document.getElementById('thumb'),
+                    error = $('div.error');
+            uploadInput.on('change', function () {
+                var data = new FormData();
+                data.append('file', uploadInput[0].files[0]);
+                $.ajax({
+                    url: '/posts/upload',
+                    type: 'POST',
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.filelink) {
+                            thumb.style.display = 'block';
+                            thumb.setAttribute('src', result.filelink);
+                            imageInput.val(result.filelink);
+                            error.hide();
+                        } else {
+                            error.text(result.message);
+                            error.show();
+                        }
+                    },
+                    error: function (result) {
+                        error.text("{{ trans('posts.upload_error') }}");
+                        error.show();
+                    }
+                });
+            });
+            
         });
+
     </script>
 @stop

@@ -8,7 +8,7 @@
          var data = new FormData();
          data.append('file', uploadInput[0].files[0]);
          $.ajax({
-            url: '/upload',
+            url: '/users/upload',
             type: 'POST',
             data: data,
             processData: false,

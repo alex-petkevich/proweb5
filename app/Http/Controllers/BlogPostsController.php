@@ -4,6 +4,7 @@ class BlogPostsController extends BaseController
 {
 
    protected $post;
+   const UPLOAD_DIR = '/storage/blog_posts';
 
    public function __construct(Post $post) {
       $this->post = $post;
@@ -26,6 +27,10 @@ class BlogPostsController extends BaseController
     */
    public function create() {
       $post = $this->post;
+
+      if (Input::old('image') != '') {
+         $post->avatar = Input::old('image');
+      }
       /* if (!empty($request->input("category_id"))) {
         $post->category_id = $request->input("category_id");
         }
@@ -126,6 +131,26 @@ class BlogPostsController extends BaseController
 
       return Redirect::route('pages.index')
                   ->with('message', trans('validation.success'));
+   }
+
+   /**
+    * Save uploaded avatar image
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
+   public function uploadAvatarImage()
+   {
+      $rules = array('file' => 'mimes:jpeg,png');
+      $validator = Validator::make(Input::all(), $rules);
+      if ($validator->fails()) {
+         return Response::json(array('message' => $validator->messages()->first('file')));
+      }
+      $dir = self::UPLOAD_DIR . '/images' . date('/Y/m/d/');
+      do {
+         $filename = str_random(30) . '.jpg';
+      } while (File::exists(public_path() . $dir . $filename));
+      Input::file('file')->move(public_path() . $dir, $filename);
+      return Response::json(array('filelink' => $dir . $filename));
    }
 
 }

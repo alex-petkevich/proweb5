@@ -74,7 +74,10 @@ Route::group(array('after' => 'admin.auth'), function() {
       // admin routes
       Route::resource('roles', 'RolesController');
       Route::resource('users', 'UsersController');
+
       Route::resource('posts', 'BlogPostsController');
+      Route::post('posts/upload', array('uses' => 'BlogPostsController@uploadAvatarImage'));
+
       Route::resource('settings', 'SettingsController', ['except' => ['show']]);
 
       Route::get('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@edit_profile'));
@@ -82,7 +85,7 @@ Route::group(array('after' => 'admin.auth'), function() {
       Route::patch('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@update_profile'));
       Route::patch('users/{users}/edit_notes', array('as' => 'users.edit_notes', 'uses' => 'UsersController@update_notes'));
       Route::patch('users/{users}/edit', array('as' => 'users.edit', 'uses' => 'UsersController@update'));
-      Route::post('upload', array('uses' => 'UsersController@uploadAvatarImage'));
+      Route::post('users/upload', array('uses' => 'UsersController@uploadAvatarImage'));
       Route::post('users/update_state', array('uses' => 'UsersController@updateState'));
 
       Route::get('settings/index_payment', array('as' => 'settings.index_payment', 'uses' => 'SettingsController@index_payment'));
