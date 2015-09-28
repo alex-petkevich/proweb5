@@ -29,7 +29,7 @@
 </div>
 
 <p>
-   {!! Form::model($users, array('method' => 'GET', 'route' => array('users.index'), 'role' => 'form', 'class' => (isset($filter['filter']) ?  'form-inline form-search' : 'form-inline hide form-search') )) !!}
+{!! Form::model($users, array('method' => 'GET', 'route' => array('users.index'), 'role' => 'form', 'class' => (isset($filter['filter']) ?  'form-inline form-search' : 'form-inline form-search'), 'style' => (isset($filter['filter']) ?  '' : 'display:none') )) !!}
 <div class="well">
 
    <div class="form-group">

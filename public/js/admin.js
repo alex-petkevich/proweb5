@@ -21,7 +21,7 @@ $(document).ready(function() {
         $('#delete_button').append(function(){
             return "\n<form action='"+$(this).attr('href')+"' method='POST' id='del_form' style='display:none'>" +
             "<input type='hidden' name='_method' value='DELETE' />" +
-            "<input type='hidden' name='_token' value='"+$('#csrf_token').val()+"' />"
+                "<input type='hidden' name='_token' value='" + $('#csrf_token').val() + "' />";
             "</form>";
         });
 
@@ -30,11 +30,7 @@ $(document).ready(function() {
     });
 
     $('#btn-search').click(function() {
-        if ($('.form-search').is(":visible")) {
-            $('.form-search').addClass("hide");
-        } else {
-            $('.form-search').hide().removeClass("hide").slideDown('fast');
-        }
+        $('.form-search').toggle(300);
     });
 
 });
