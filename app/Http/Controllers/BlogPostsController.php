@@ -47,7 +47,7 @@ class BlogPostsController extends BaseController
     * @return \Illuminate\Http\Response
     */
    public function store(Request $request) {
-      $input = Input::all();
+      $input = array_except(Input::all(), array('categories', 'file'));
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
@@ -97,7 +97,7 @@ class BlogPostsController extends BaseController
     * @return \Illuminate\Http\Response
     */
    public function update(Request $request, $id) {
-      $input = array_except(Input::all(), array('_method', '_token'));
+      $input = array_except(Input::all(), array('_method', '_token', 'categories', 'file'));
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
@@ -127,9 +127,9 @@ class BlogPostsController extends BaseController
     * @return \Illuminate\Http\Response
     */
    public function destroy($id) {
-      $this->page->find($id)->delete();
+      $this->post->find($id)->delete();
 
-      return Redirect::route('pages.index')
+      return Redirect::route('posts.index')
                   ->with('message', trans('validation.success'));
    }
 

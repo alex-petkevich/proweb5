@@ -32,5 +32,6 @@ return array(
    'only_for_roles' => 'Доступно только для ролей',
    'description' => 'Текст',
    'no' => '- Нет -',
-   'upload_error' => 'Ошибка загрузки файла'
+   'upload_error' => 'Ошибка загрузки файла',
+   'categories' => 'Категории'
 );

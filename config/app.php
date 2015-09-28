@@ -130,7 +130,8 @@ return [
       App\Providers\EventServiceProvider::class,
       App\Providers\RouteServiceProvider::class,
       Collective\Html\HtmlServiceProvider::class,
-      Bkwld\Croppa\ServiceProvider::class
+      'Intervention\Image\ImageServiceProvider',
+      'Devfactory\Imagecache\ImagecacheServiceProvider',
    ],
    /*
      |--------------------------------------------------------------------------
@@ -180,6 +181,6 @@ return [
       'Html' => Collective\Html\HtmlFacade::class,
       'Debugbar' => Barryvdh\Debugbar\Facade::class,
       'Image' => Intervention\Image\Facades\Image::class,
-      'Croppa' => Bkwld\Croppa\Facade::class
+      'Imagecache' => 'Devfactory\Imagecache\Facades\ImagecacheFacade',
    ],
 ];
