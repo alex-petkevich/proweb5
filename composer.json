@@ -11,7 +11,7 @@
         "barryvdh/laravel-debugbar": "^2.0",
         "barryvdh/laravel-ide-helper": "^2.0",
         "intervention/image": "^2.3",
-        "bkwld/croppa": "~4.0"
+        "devfactory/imagecache": "3.0.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

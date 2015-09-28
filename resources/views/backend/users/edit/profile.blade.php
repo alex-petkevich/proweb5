@@ -35,7 +35,7 @@
    {!! Form::label('file', trans('users.avatar'), array('class' => 'control-label')) !!}
    {!! Form::file('file') !!}
    @if ($errors->has('file')) <span class="glyphicon glyphicon-remove form-control-feedback"></span> @endif
-   <img src="{!! Croppa::url($user->avatar, 100, null) !!}" id="thumb" style="max-width:300px; max-height: 200px;@if ($user->avatar == '') display: none;@endif"  class="img-thumbnail">
+   <img src="{!! Imagecache::get($user->avatar, '150x150resize')->src  !!}" id="thumb" style="max-width:150px; max-height: 150px;@if ($user->avatar == '') display: none;@endif"  class="img-thumbnail">
    {!! Form::hidden('image', $user->avatar) !!}
    <div class="error alert alert-danger" style="display: none;"></div>
 </div>

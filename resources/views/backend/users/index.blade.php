@@ -72,10 +72,10 @@
 
    <tbody>
       @foreach ($users as $user)
-         <tr @if (!$user->active) class="tr-disabled" @endif id="tr-{!! $user->id !!}">
-            <td><img src="{!! Croppa::url($user->avatar, 50, null) !!}" id="thumb"
-                     style="max-width:50px; max-height: 50px;@if ($user->avatar == '') display: none;@endif"
-                     class="img-thumbnail"></td>
+      <tr @if (!$user->active) class="tr-disabled" @endif id="tr-{!! $user->id !!}">
+           <td><img src="{!! Imagecache::get($user->avatar, '150x150')->src !!}" id="thumb"
+               style="max-width:50px; max-height: 50px;@if ($user->avatar == '') display: none;@endif"
+               class="img-thumbnail"></td>
          <td>{{{ $user->username }}}</td>
          <td>{{{ $user->email }}}</td>
          <td>
