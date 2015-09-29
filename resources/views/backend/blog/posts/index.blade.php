@@ -57,12 +57,10 @@
     @include('backend.blog.categories.index')
 @stop
 
+@section('styles')
+    <link href="{!! asset('vendor/bootstrap/css/bootstrap-treeview.min.css') !!}" rel="stylesheet">
+@stop
 
 @section('scripts')
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-
-        });
-    </script>
+    <script type="text/javascript" src="{!! asset('vendor/bootstrap/js/bootstrap-treeview.min.js') !!}"></script>
 @stop

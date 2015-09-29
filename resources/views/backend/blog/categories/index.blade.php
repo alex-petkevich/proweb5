@@ -9,13 +9,58 @@
                 <h4 class="modal-title" id="myModalLabel">{!! trans('blog_categories.categories_title') !!}</h4>
             </div>
             <div class="modal-body">
-                ...
+                <div id="tree"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default"
                         data-dismiss="modal">{!! trans('blog_categories.close') !!}</button>
-                <button type="button" class="btn btn-primary">{!! trans('blog_categories.submit') !!}</button>
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        function getTree() {
+            var data = [
+                {
+                    text: "Parent 1",
+                    tags: ["<button type=\"button\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-minus\"></span></button>", "<button type=\"button\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-plus\"></span></button>"],
+                    nodes: [
+                        {
+                            text: "Child 1",
+                            nodes: [
+                                {
+                                    text: "Grandchild 1"
+                                },
+                                {
+                                    text: "Grandchild 2"
+                                }
+                            ]
+                        },
+                        {
+                            text: "Child 2"
+                        }
+                    ]
+                },
+                {
+                    text: "Parent 2"
+                },
+                {
+                    text: "Parent 3"
+                },
+                {
+                    text: "Parent 4"
+                },
+                {
+                    text: "Parent 5"
+                }
+            ];
+            return data;
+        }
+
+        $('#tree').treeview({data: getTree(), showTags: true});
+        $('#tree').treeview('expandAll');
+    });
+</script>

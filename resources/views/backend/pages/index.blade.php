@@ -9,8 +9,8 @@
       title="{!! trans('pages.add_new_page') !!}" id="create_button"><span
          class="glyphicon glyphicon-plus"></span> {!! trans('pages.add_new_page') !!}</a>
    @if (count($pages))
-   <a href="{!! route('pages.index') !!}" class="btn disabled btn-default" title="{!! trans('pages.edit') !!}"
-      id="edit_button"><i class="glyphicon glyphicon-edit"></i> {!! trans('pages.edit') !!}</a>
+      <a href="{!! route('pages.index') !!}" class="btn disabled btn-default" title="{!! trans('pages.edit') !!}"
+         id="edit_button"><i class="glyphicon glyphicon-edit"></i> {!! trans('pages.edit') !!}</a>
       <a href="{!! route('pages.index') !!}" class="btn disabled btn-danger" title="{!! trans('pages.delete') !!}"
          id="delete_button"><i class="glyphicon glyphicon-trash"></i> {!! trans('pages.delete') !!}</a>
 </p>
