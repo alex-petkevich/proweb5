@@ -37,20 +37,23 @@
 
     $(document).ready(function () {
         $('#addCat').click(function () {
-            showModalCat("", "", true);
+            showModalCat("", "", "1");
         });
-        function showModalCat(name, title, active) {
-            $('#name').val("");
-            $('#title').val("");
-            $('#active').prop("checked", active);
-            $('#editModal').modal();
-        }
-        
         function getTree() {
+            $.ajax({
+                url: 'blog/categories/api/get',
+                data: data,
+                success: success,
+                dataType: dataType
+            });
+            
             var data = [
                 {
                     text: "Parent 1",
                     id: "parent_1",
+                    name: "name1",
+                    parent_id: "parent_name1",
+                    active: "1",
                     nodes: [
                         {
                             text: "Child 1",
@@ -91,6 +94,7 @@
 
         treeview(getTree(), $('#tree'));
     });
+
     function treeview(data, element) {
         $.each(data, function (key, val) {
             recursiveFunction(key, val, element, 0);
@@ -114,9 +118,9 @@
         var current = "<li class=\"list-group-item\">";
         current += "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-8 text-left\">";
         current += "&nbsp;".repeat(shift * 3);
-        current += "<a href='javascript:;' class='cats-edit' onclick='showModalCat(this.text, '', true)' ref='" + val.id + "'>" + val.text + "</a>";
+        current += "<a href='javascript:;' onclick='showModalCat(this.getAttribute(\"dataid\"),this.text, this.getAttribute(\"dataactive\"), this.getAttribute(\"dataname\"), this.getAttribute(\"dataparent\"))' dataid='" + val.id + "' dataname='" + val.name + "' dataactive='" + val.active + "' dataparent='" + val.parent_id + "'>" + val.text + "</a>";
         current += "</div><div class=\"col-md-4 text-right\">";
-        current += "<button type=\"button\" class=\"btn btn-default btn-xs cats-add\"><span class=\"glyphicon glyphicon-plus\"></span></button>";
+        current += "<button type=\"button\" class=\"btn btn-default btn-xs cats-add\" onclick='showModalCat(\"\",\"\", \"1\", \"\", this.getAttribute(\"dataparent\"))' dataparent='" + val.id + "'><span class=\"glyphicon glyphicon-plus\"></span></button>";
         current += "<button type=\"button\" class=\"btn btn-default btn-xs cats-delete\"><span class=\"glyphicon glyphicon-minus\"></span></button>";
         current += "</div></div></div>";
         current += "</li>";
@@ -124,4 +128,14 @@
         var prevHtml = element.html();
         element.html(prevHtml + current);
     }
+
+    function showModalCat(id, title, active, name, parent_id) {
+        $('#id').val(id != 'undefined' ? id : "");
+        $('#parent_id').val(parent_id != 'undefined' ? parent_id : "");
+        $('#name').val(name != 'undefined' ? name : "");
+        $('#title').val(title != 'undefined' ? title : "");
+        $('#active').prop("checked", active == '1');
+        $('#editModal').modal();
+    }
+    
 </script>

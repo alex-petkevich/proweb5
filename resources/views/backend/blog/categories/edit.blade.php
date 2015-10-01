@@ -22,8 +22,8 @@
                             {!! trans('blog_categories.active')  !!}
                         </label>
                     </div>
-                    <input type="hidden" name="id" value=""/>
-                    <input type="hidden" name="parent_id" value=""/>
+                    <input type="hidden" name="id" id="id" value=""/>
+                    <input type="hidden" name="parent_id" id="parent_id" value=""/>
                 </form>
             </div>
             <div class="modal-footer">
