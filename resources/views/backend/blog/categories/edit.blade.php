@@ -7,12 +7,15 @@
                 <h4 class="modal-title" id="editCategoryModalLabel">{!! trans('blog_categories.properties')  !!}</h4>
             </div>
             <div class="modal-body">
+                <div id="editModalErrors" class="alert alert-danger" style="display: none">
+
+                </div>
                 <form>
                     <div class="form-group">
                         <label for="name" class="control-label">{!! trans('blog_categories.address')  !!}</label>
                         <input type="text" class="form-control" id="name">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="box-title">
                         <label for="title" class="control-label">{!! trans('blog_categories.title')  !!}</label>
                         <input type="text" class="form-control" id="title">
                     </div>
@@ -29,7 +32,8 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default"
                         data-dismiss="modal">{!! trans('blog_categories.close')  !!}</button>
-                <button type="button" class="btn btn-primary">{!! trans('blog_categories.submit')  !!}</button>
+                <button type="button" class="btn btn-primary"
+                        id="btnAdd">{!! trans('blog_categories.submit')  !!}</button>
             </div>
         </div>
     </div>

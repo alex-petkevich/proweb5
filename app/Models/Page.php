@@ -12,9 +12,11 @@ class Page extends BaseModel {
       'title' => 'required'
    );
 
-   public function getTreeArray($parent_id = 0) {
-      $pagesArr = $this->get()->toArray();
-      return buildTree($pagesArr);
+   public function getTreeArray($parent_id = 0, $active = 0)
+   {
+      $pagesArr = ($active ? $this->where('active', 1)->get() : $this->get());
+      $pages = $pagesArr->toArray();
+      return buildTree($pages);
    }
 
 }

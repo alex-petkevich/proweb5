@@ -75,7 +75,7 @@ Route::group(array('after' => 'admin.auth'), function() {
       Route::resource('roles', 'RolesController');
       Route::resource('users', 'UsersController');
 
-      Route::resource('blog/categories/api', 'BlogCategoriesController');
+      Route::resource('api/blog/categories', 'BlogCategoriesController');
 
       Route::resource('posts', 'BlogPostsController');
       Route::post('posts/upload', array('uses' => 'BlogPostsController@uploadAvatarImage'));

@@ -9,6 +9,13 @@
                 <h4 class="modal-title" id="myModalLabel">{!! trans('blog_categories.categories_title') !!}</h4>
             </div>
             <div class="modal-body">
+                <div class="progress" id="progress" style="display:none;">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        <span class="sr-only">Подождите..</span>
+                    </div>
+                </div>
+
                 <div id="tree"></div>
             </div>
             <div class="modal-footer">
@@ -36,66 +43,98 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $('#addCat').click(function () {
-            showModalCat("", "", "1");
+        getTree();
+        $('#btnAdd').click(function () {
+            addCat();
         });
-        function getTree() {
-            $.ajax({
-                url: 'blog/categories/api/get',
-                data: data,
-                success: success,
-                dataType: dataType
-            });
-            
-            var data = [
-                {
-                    text: "Parent 1",
-                    id: "parent_1",
-                    name: "name1",
-                    parent_id: "parent_name1",
-                    active: "1",
-                    nodes: [
-                        {
-                            text: "Child 1",
-                            id: "parent_21",
-                            nodes: [
-                                {
-                                    text: "Grandchild 1",
-                                    id: "parent3_1",
-                                },
-                                {
-                                    text: "Grandchild 2",
-                                    id: "parent4_1",
-                                }
-                            ]
-                        },
-                        {
-                            text: "Child 2",
-                            id: "paren5t_1",
-                        }
-                    ]
-                },
-                {
-                    text: "Parent 2",
-                    id: "par6ent_1",
-                },
-                {
-                    text: "Parent 3"
-                },
-                {
-                    text: "Parent 4"
-                },
-                {
-                    text: "Parent 5"
-                }
-            ];
-            return data;
-        }
 
-        treeview(getTree(), $('#tree'));
     });
 
+    $('#addCat').click(function () {
+        showModalCat("", "", "1");
+    });
+
+    function processSuccess(data) {
+        $('#progress').hide();
+        treeview(data, $('#tree'));
+    }
+
+
+    function getTree() {
+        $('#progress').show();
+        $.ajax({
+            url: 'api/blog/categories',
+            success: processSuccess,
+            error: function () {
+                $('#progress').hide();
+            },
+            dataType: "json"
+        });
+    }
+
+    function delCat(id) {
+        $('#progress').show();
+        $.ajax({
+            url: 'api/blog/categories/' + id,
+            type: "DELETE",
+            success: getTree,
+            error: function () {
+                $('#progress').hide();
+            },
+            dataType: "json"
+        });
+    }
+
+    function addCat() {
+
+        var parent_id = $('#parent_id').val();
+        var name = $('#name').val();
+        var title = $('#title').val();
+        var active = $('#active').prop("checked");
+
+        if (title == '') {
+            $('#box-title').addClass('has-error').addClass('has-feedback');
+            return false;
+        } else {
+            $('#box-title').removeClass('has-error').removeClass('has-feedback');
+        }
+
+        var data = {
+            parent_id: parent_id,
+            name: name,
+            title: title,
+            active: active
+        };
+
+        $('#progress').show();
+
+        $.ajax({
+            url: 'api/blog/categories',
+            type: "POST",
+            data: data,
+            success: function (data) {
+                $('#progress').hide();
+                if (data.status == 'OK') {
+                    $('#editModal').modal('toggle');
+                    getTree();
+                } else {
+                    var mess = "";
+                    $.each(data.messages, function (val) {
+                        mess += data.messages[val] + "<br />";
+                    });
+                    $('#editModalErrors').html(mess);
+                    $('#editModalErrors').show();
+                }
+            },
+            error: function (xhr, data) {
+                $('#progress').hide();
+            },
+            dataType: "json"
+        });
+    }
+    
     function treeview(data, element) {
+        element.html("");
         $.each(data, function (key, val) {
             recursiveFunction(key, val, element, 0);
         });
@@ -105,7 +144,7 @@
 
     function recursiveFunction(key, val, element, shift) {
         displayValue(key, val, element, shift);
-        var value = val['nodes'];
+        var value = val['children'];
         if (value instanceof Object) {
             shift++;
             $.each(value, function (key, val) {
@@ -118,10 +157,10 @@
         var current = "<li class=\"list-group-item\">";
         current += "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-8 text-left\">";
         current += "&nbsp;".repeat(shift * 3);
-        current += "<a href='javascript:;' onclick='showModalCat(this.getAttribute(\"dataid\"),this.text, this.getAttribute(\"dataactive\"), this.getAttribute(\"dataname\"), this.getAttribute(\"dataparent\"))' dataid='" + val.id + "' dataname='" + val.name + "' dataactive='" + val.active + "' dataparent='" + val.parent_id + "'>" + val.text + "</a>";
+        current += "<a href='javascript:;' onclick='showModalCat(this.getAttribute(\"dataid\"),this.text, this.getAttribute(\"dataactive\"), this.getAttribute(\"dataname\"), this.getAttribute(\"dataparent\"))' dataid='" + val.id + "' dataname='" + val.name + "' dataactive='" + val.active + "' dataparent='" + val.parent_id + "'>" + val.title + "</a>";
         current += "</div><div class=\"col-md-4 text-right\">";
         current += "<button type=\"button\" class=\"btn btn-default btn-xs cats-add\" onclick='showModalCat(\"\",\"\", \"1\", \"\", this.getAttribute(\"dataparent\"))' dataparent='" + val.id + "'><span class=\"glyphicon glyphicon-plus\"></span></button>";
-        current += "<button type=\"button\" class=\"btn btn-default btn-xs cats-delete\"><span class=\"glyphicon glyphicon-minus\"></span></button>";
+        current += "<button type=\"button\" class=\"btn btn-default btn-xs cats-delete\" onclick='delCat(this.getAttribute(\"dataid\"))' dataid='" + val.id + "'><span class=\"glyphicon glyphicon-minus\"></span></button>";
         current += "</div></div></div>";
         current += "</li>";
 
@@ -135,6 +174,8 @@
         $('#name').val(name != 'undefined' ? name : "");
         $('#title').val(title != 'undefined' ? title : "");
         $('#active').prop("checked", active == '1');
+        $('#box-title').removeClass('has-error').removeClass('has-feedback');
+        $('#editModalErrors').hide();
         $('#editModal').modal();
     }
     

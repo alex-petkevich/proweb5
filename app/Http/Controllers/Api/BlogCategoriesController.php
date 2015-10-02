@@ -2,6 +2,12 @@
 
 class BlogCategoriesController extends BaseController
 {
+   protected $category;
+
+   public function __construct(BlogCategory $category)
+   {
+      $this->category = $category;
+   }
    /**
     * Display a listing of the resource.
     *
@@ -9,7 +15,8 @@ class BlogCategoriesController extends BaseController
     */
    public function index()
    {
-      //
+      $categories = $this->category->getTreeArray(0, 1);
+      return $categories;
    }
 
    /**
@@ -19,6 +26,7 @@ class BlogCategoriesController extends BaseController
     */
    public function create()
    {
+      echo "eee23";
       //
    }
 
@@ -30,7 +38,18 @@ class BlogCategoriesController extends BaseController
     */
    public function store(Request $request)
    {
-      //
+      $input = Input::all();
+      if (empty($input['name'])) {
+         $input['name'] = str_slug($input['title'], '-');
+      }
+      $input['parent_id'] = (int)$input['parent_id'];
+      $input['active'] = (int)($input['active'] == 'true');
+      $validation = Validator::make($input, BlogCategory::$rules);
+      if ($validation->passes()) {
+         $this->category->create($input);
+         return array('status' => 'OK');
+      }
+      return array('status' => 'error', 'messages' => $validation->messages());
    }
 
    /**
@@ -41,6 +60,7 @@ class BlogCategoriesController extends BaseController
     */
    public function show($id)
    {
+      echo "eee4";
       //
    }
 
@@ -52,6 +72,7 @@ class BlogCategoriesController extends BaseController
     */
    public function edit($id)
    {
+      echo "eee";
       //
    }
 
@@ -75,6 +96,10 @@ class BlogCategoriesController extends BaseController
     */
    public function destroy($id)
    {
-      //
+      BlogCategory::where('parent_id', '=', $id)->delete();
+      $cat = BlogCategory::find($id);
+      if ($cat)
+         $cat->delete();
+      return array('status' => 'OK');
    }
 }
