@@ -9,7 +9,7 @@ class Post extends BaseModel {
    protected $guarded = array();
    protected $table = 'blog_posts';
    public static $rules = array(
-      'name' => 'required|alpha_dash|min:2|max:200|unique:pages,name',
+      'name' => 'required|alpha_dash|min:2|max:200|unique:blog_posts,name',
       'title' => 'required'
    );
 

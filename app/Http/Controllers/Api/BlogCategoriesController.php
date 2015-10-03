@@ -15,7 +15,7 @@ class BlogCategoriesController extends BaseController
     */
    public function index()
    {
-      $categories = $this->category->getTreeArray(0, 1);
+      $categories = $this->category->getTreeArray(0, 0);
       return $categories;
    }
 
@@ -26,7 +26,6 @@ class BlogCategoriesController extends BaseController
     */
    public function create()
    {
-      echo "eee23";
       //
    }
 
@@ -60,7 +59,6 @@ class BlogCategoriesController extends BaseController
     */
    public function show($id)
    {
-      echo "eee4";
       //
    }
 
@@ -72,7 +70,6 @@ class BlogCategoriesController extends BaseController
     */
    public function edit($id)
    {
-      echo "eee";
       //
    }
 
@@ -85,7 +82,27 @@ class BlogCategoriesController extends BaseController
     */
    public function update(Request $request, $id)
    {
-      //
+      $input = Input::all();
+      if (empty($input['name'])) {
+         $input['name'] = str_slug($input['title'], '-');
+      }
+      $input['parent_id'] = (int)$input['parent_id'];
+      $input['active'] = (int)($input['active'] == 'true');
+      $category = $this->category->find($id);
+      $rules = BlogCategory::$rules;
+      if ($category->id) {
+         $rules['name'] = $rules['name'] . ', ' . $category->id;
+      }
+      $validation = Validator::make($input, $rules);
+      if ($validation->passes()) {
+         if ($category->id) {
+            $category->update($input);
+            return array('status' => 'OK');
+         } else {
+            return array('status' => 'error', 'messages' => trans('blog_categories.id_not_found'));
+         }
+      }
+      return array('status' => 'error', 'messages' => $validation->messages());
    }
 
    /**

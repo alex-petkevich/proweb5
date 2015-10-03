@@ -11,7 +11,7 @@ class BlogCategory extends BaseModel
    public static $rules = array(
       'name' => 'required|alpha_dash|min:1|max:200|unique:blog_categories,name'
    );
-   protected $fillable = ['parent_id'];
+   protected $guarded = [];
 
    public function getTreeArray($parent_id = 0, $active = 0)
    {
