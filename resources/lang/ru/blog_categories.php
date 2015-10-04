@@ -12,5 +12,6 @@ return array(
    'address' => 'Адрес',
    'title' => 'Название',
    'active' => 'Активно',
+   'select_cats' => 'Выбор категорий',
    'categories_title' => 'Редактор категорий'
 );

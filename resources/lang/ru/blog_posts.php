@@ -33,5 +33,6 @@ return array(
    'description' => 'Текст',
    'no' => '- Нет -',
    'upload_error' => 'Ошибка загрузки файла',
+   'select' => 'Выбрать',
    'categories' => 'Категории'
 );

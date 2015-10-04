@@ -17,8 +17,11 @@
             {!! Form::open(array('route' => 'posts.store', 'post' => 'form', 'id'=>'mainForm')) !!}
         @endif
         <div class="form-group @if ($errors->has('category')) has-error has-feedback @endif">
-            {!! Form::label('category', trans('blog_posts.category'), array('class' => 'control-label')) !!}
-            {!! Form::text('categories', Input::old('categories', implode(', ', array_fetch($post->categories()->get(array('title'))->toArray(), 'title'))),array('class' => 'form-control')) !!}
+            {!! Form::label('category', trans('blog_posts.category'), array('class' => 'control-label')) !!} (<a
+                    href="javascript:" id="categories" data-toggle="modal"
+                    data-target="#catSelector">{!! trans('blog_posts.select') !!}</a>)
+            {!! Form::text('categories', Input::old('categories', implode(', ', array_pluck($post->categories()->get(array('title'))->toArray(), 'title'))),array('class' => 'form-control', 'id' => 'categories-view', 'disabled'=>'1')) !!}
+            {!! Form::hidden('categories_ids',implode(', ', array_pluck($post->categories()->get(array('blog_category_id'))->toArray(), 'id')), array('id'=>'categories-hidden')) !!}
         </div>
         <div class="form-group @if ($errors->has('name')) has-error has-feedback @endif">
             {!! Form::label('name', trans('blog_posts.name'), array('class' => 'control-label')) !!}
@@ -86,6 +89,7 @@
         <input type='hidden' name='active' value='0' id='active'/>
         {!! Form::close() !!}
     </div>
+    @include('backend.blog.categories.select')
 @stop
 
 @section('scripts')
@@ -100,6 +104,9 @@
         $('#btn_additional_options').click(function () {
             $('#additional_options').toggle(1000);
             return false;
+        });
+        $('#categories').click(function () {
+
         });
         tinymce.init({
             selector: "#description",
@@ -166,6 +173,7 @@
                             return false;
                         }
                     });
+
             var uploadInput = $('#file'),
                     imageInput = $('[name="avatar"]'),
                     thumb = document.getElementById('thumb'),
