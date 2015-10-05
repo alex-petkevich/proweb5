@@ -2,9 +2,10 @@
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Role extends BaseModel {
+class Role extends BaseModel
+{
    use SoftDeletes;
-   
+
    protected $guarded = array();
 
    public static $rules = array(

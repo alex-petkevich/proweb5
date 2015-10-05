@@ -1,10 +1,12 @@
 <?php
 
-class SettingsController extends BaseController {
+class SettingsController extends BaseController
+{
 
    protected $settings;
 
-   public function __construct(Settings $settings) {
+   public function __construct(Settings $settings)
+   {
       $this->settings = $settings;
    }
 
@@ -13,13 +15,15 @@ class SettingsController extends BaseController {
     *
     * @return Response
     */
-   public function index() {
+   public function index()
+   {
       $settings = $this->settings->whereNull('group')->get();
 
       return View::make('backend.settings.index', compact('settings'));
    }
 
-   public function index_payment() {
+   public function index_payment()
+   {
       $settings = $this->settings->where('group', '=', 'payment')->get();
       return View::make('backend.settings.index', compact('settings'));
    }
@@ -29,38 +33,42 @@ class SettingsController extends BaseController {
     *
     * @return Response
     */
-   public function create() {
+   public function create()
+   {
       $i = 1;
    }
 
    /**
     * Store a newly created resource in storage.
     *
-    * @param  Request  $request
+    * @param  Request $request
     * @return Response
     */
-   public function store(Request $request) {
+   public function store(Request $request)
+   {
       $i = 1;
    }
 
    /**
     * Show the form for editing the specified resource.
     *
-    * @param  int  $id
+    * @param  int $id
     * @return Response
     */
-   public function edit($id) {
+   public function edit($id)
+   {
       $i = 1;
    }
 
    /**
     * Update the specified resource in storage.
     *
-    * @param  Request  $request
-    * @param  int  $id
+    * @param  Request $request
+    * @param  int $id
     * @return Response
     */
-   public function update(Request $request) {
+   public function update(Request $request)
+   {
       $input = array_except(Input::all(), '_method');
 
       if (isset($input['name'])) {
@@ -78,9 +86,9 @@ class SettingsController extends BaseController {
 
       if (!isset($validation) || $validation->passes()) {
          Settings::clearCache();
-         
+
          return Redirect::route('settings.index')
-                     ->with('message', trans('validation.success'));
+            ->with('message', trans('validation.success'));
       }
 
       return Redirect::route('settings.index')
@@ -91,10 +99,11 @@ class SettingsController extends BaseController {
    /**
     * Remove the specified resource from storage.
     *
-    * @param  int  $id
+    * @param  int $id
     * @return Response
     */
-   public function destroy($id) {
+   public function destroy($id)
+   {
       $this->settings->find($id)->delete();
 
       return Redirect::route('settings.index');

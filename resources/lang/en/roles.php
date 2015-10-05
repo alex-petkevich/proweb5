@@ -14,6 +14,6 @@ return array(
    'no_roles' => 'There are no roles',
    'show_role' => 'Show Role',
    'return_all' => 'Return to all roles',
-    'title' => 'Title',
-    'description' => 'Description'
+   'title' => 'Title',
+   'description' => 'Description'
 );

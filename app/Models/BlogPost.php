@@ -2,7 +2,8 @@
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Post extends BaseModel {
+class Post extends BaseModel
+{
 
    use SoftDeletes;
 
@@ -13,11 +14,13 @@ class Post extends BaseModel {
       'title' => 'required'
    );
 
-   public function categories() {
+   public function categories()
+   {
       return $this->belongsToMany('BlogCategory', null, 'blog_post_id', 'blog_category_id');
    }
 
-   public function comments() {
+   public function comments()
+   {
       return $this->hasMany('BlogComment');
    }
 
@@ -25,8 +28,9 @@ class Post extends BaseModel {
    {
       return $this->belongsTo('\User');
    }
-   
-   public static function getSortOptions() {
+
+   public static function getSortOptions()
+   {
       $sort = array(
          '' => '-',
          'title' => trans('blog_posts.title'),

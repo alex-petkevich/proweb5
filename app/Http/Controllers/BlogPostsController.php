@@ -1,12 +1,14 @@
 <?php
 
-class BlogPostsController extends BaseController {
+class BlogPostsController extends BaseController
+{
 
    protected $post;
 
    const UPLOAD_DIR = '/storage/blog_posts';
 
-   public function __construct(Post $post) {
+   public function __construct(Post $post)
+   {
       $this->post = $post;
    }
 
@@ -15,7 +17,8 @@ class BlogPostsController extends BaseController {
     *
     * @return \Illuminate\Http\Response
     */
-   public function index() {
+   public function index()
+   {
       $filter = array_fill_keys($this->post->getAllColumnsNames(), "");
       $stop_fields = array('filter');
       $input = Input::all();
@@ -74,7 +77,8 @@ class BlogPostsController extends BaseController {
     *
     * @return \Illuminate\Http\Response
     */
-   public function create() {
+   public function create()
+   {
       $post = $this->post;
 
       if (Input::old('image') != '') {
@@ -95,14 +99,15 @@ class BlogPostsController extends BaseController {
     * @param  \Illuminate\Http\Request $request
     * @return \Illuminate\Http\Response
     */
-   public function store(Request $request) {
+   public function store(Request $request)
+   {
       $input = array_except(Input::all(), array('categories', 'file', 'categories_ids'));
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
       $validation = Validator::make($input, Post::$rules);
       if ($validation->passes()) {
-         $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
+         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
          if (!$input['publishied_at'])
             $input['publishied_at'] = date("Y-m-d H:i:s");
          $input['user_id'] = Auth::user()->id;
@@ -120,9 +125,9 @@ class BlogPostsController extends BaseController {
       }
 
       return Redirect::route('posts.create')
-                  ->withInput()
-                  ->withErrors($validation)
-                  ->with('message', trans('validation.errors'));
+         ->withInput()
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -131,7 +136,8 @@ class BlogPostsController extends BaseController {
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function show($id) {
+   public function show($id)
+   {
       return View::make('frontend.blog.posts.show');
    }
 
@@ -141,7 +147,8 @@ class BlogPostsController extends BaseController {
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function edit($id) {
+   public function edit($id)
+   {
       $post = $this->post->findOrFail($id);
 
 //      $catalog = $this->getDocumentTree();
@@ -156,7 +163,8 @@ class BlogPostsController extends BaseController {
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function update(Request $request, $id) {
+   public function update(Request $request, $id)
+   {
       $input = array_except(Input::all(), array('_method', '_token', 'categories', 'file', 'categories_ids'));
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
@@ -168,7 +176,7 @@ class BlogPostsController extends BaseController {
       }
       $validation = Validator::make($input, $rules);
       if ($validation->passes()) {
-         $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
+         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
          if (!$input['publishied_at'])
             $input['publishied_at'] = date("Y-m-d H:i:s");
          $input['user_id'] = Auth::user()->id;
@@ -186,9 +194,9 @@ class BlogPostsController extends BaseController {
       }
 
       return Redirect::route('posts.edit', $id)
-                  ->withInput()
-                  ->withErrors($validation)
-                  ->with('message', trans('validation.errors'));
+         ->withInput()
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -197,11 +205,12 @@ class BlogPostsController extends BaseController {
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function destroy($id) {
+   public function destroy($id)
+   {
       $this->post->find($id)->delete();
 
       return Redirect::route('posts.index')
-                  ->with('message', trans('validation.success'));
+         ->with('message', trans('validation.success'));
    }
 
    /**
@@ -209,7 +218,8 @@ class BlogPostsController extends BaseController {
     *
     * @return \Illuminate\Http\JsonResponse
     */
-   public function uploadAvatarImage() {
+   public function uploadAvatarImage()
+   {
       $rules = array('file' => 'mimes:jpeg,png');
       $validator = Validator::make(Input::all(), $rules);
       if ($validator->fails()) {

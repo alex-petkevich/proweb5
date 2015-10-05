@@ -2,11 +2,13 @@
 
 use Illuminate\Http\Request;
 
-class PagesController extends BaseController {
+class PagesController extends BaseController
+{
 
    protected $page;
 
-   public function __construct(Page $page) {
+   public function __construct(Page $page)
+   {
       $this->page = $page;
    }
 
@@ -15,7 +17,8 @@ class PagesController extends BaseController {
     *
     * @return \Illuminate\Http\Response
     */
-   public function index() {
+   public function index()
+   {
       $pages = $this->page->getTreeArray();
       return View::make('backend.pages.index', compact("pages"));
    }
@@ -25,7 +28,8 @@ class PagesController extends BaseController {
     *
     * @return \Illuminate\Http\Response
     */
-   public function create(Request $request) {
+   public function create(Request $request)
+   {
       $page = $this->page;
       if (!empty($request->input("parent_id"))) {
          $page->parent_id = $request->input("parent_id");
@@ -42,24 +46,25 @@ class PagesController extends BaseController {
     * @param  \Illuminate\Http\Request $request
     * @return \Illuminate\Http\Response
     */
-   public function store(Request $request) {
+   public function store(Request $request)
+   {
       $input = Input::all();
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
       $validation = Validator::make($input, Page::$rules);
       if ($validation->passes()) {
-         $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
-         $input['show_title'] = isset($input['show_title']) ? (int) $input['show_title'] : 0;
+         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
+         $input['show_title'] = isset($input['show_title']) ? (int)$input['show_title'] : 0;
          $this->page->create($input);
 
          return Redirect::route('pages.index');
       }
 
       return Redirect::route('pages.create')
-                  ->withInput()
-                  ->withErrors($validation)
-                  ->with('message', trans('validation.errors'));
+         ->withInput()
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -68,7 +73,8 @@ class PagesController extends BaseController {
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function show($id) {
+   public function show($id)
+   {
       return View::make('frontend.pages.show');
    }
 
@@ -78,7 +84,8 @@ class PagesController extends BaseController {
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function edit($id) {
+   public function edit($id)
+   {
       $page = $this->page->findOrFail($id);
 
       $catalog = $this->getDocumentTree();
@@ -93,7 +100,8 @@ class PagesController extends BaseController {
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function update(Request $request, $id) {
+   public function update(Request $request, $id)
+   {
       $input = array_except(Input::all(), array('_method', '_token'));
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
@@ -105,17 +113,17 @@ class PagesController extends BaseController {
       }
       $validation = Validator::make($input, $rules);
       if ($validation->passes()) {
-         $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
-         $input['show_title'] = isset($input['show_title']) ? (int) $input['show_title'] : 0;
+         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
+         $input['show_title'] = isset($input['show_title']) ? (int)$input['show_title'] : 0;
          $page->update($input);
 
          return Redirect::route('pages.index');
       }
 
       return Redirect::route('pages.edit', $id)
-                  ->withInput()
-                  ->withErrors($validation)
-                  ->with('message', trans('validation.errors'));
+         ->withInput()
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -124,15 +132,17 @@ class PagesController extends BaseController {
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function destroy($id) {
+   public function destroy($id)
+   {
       $this->page->where('parent_id', '=', $id)->delete();
       $this->page->find($id)->delete();
 
       return Redirect::route('pages.index')
-                  ->with('message', trans('validation.success'));
+         ->with('message', trans('validation.success'));
    }
 
-   private function getDocumentTree() {
+   private function getDocumentTree()
+   {
       $pages = $this->page->getTreeArray();
       $pages = alignTreeArray($pages, '&nbsp;');
       $pages = flattenTreeArray($pages);

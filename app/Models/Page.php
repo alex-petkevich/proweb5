@@ -2,7 +2,8 @@
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Page extends BaseModel {
+class Page extends BaseModel
+{
 
    use SoftDeletes;
 

@@ -50,7 +50,7 @@ Route::get('logout', array('as' => 'login.logout', 'uses' => 'LoginController@lo
 Route::get('profile', array('as' => 'user.profile', 'uses' => 'UsersController@editProfile'));
 
 
-Route::group(array('before' => 'un_auth'), function() {
+Route::group(array('before' => 'un_auth'), function () {
    Route::get('login', array('as' => 'login.index', 'uses' => 'LoginController@index'));
    Route::post('login', array('uses' => 'LoginController@login'));
 
@@ -66,11 +66,13 @@ Route::group(array('before' => 'un_auth'), function() {
 
 Route::resource('blog', 'BlogController');
 Route::resource('pages', 'PagesController');
+Route::resource('promos', 'PromosController');
+Route::resource('proposals', 'ProposalsController');
 
-Route::group(array('after' => 'admin.auth'), function() {
+Route::group(array('after' => 'admin.auth'), function () {
    Route::get('dashboard', array('as' => 'login.dashboard', 'uses' => 'LoginController@dashboard'));
 
-   Route::group(array('before' => 'admin_role_only'), function() {
+   Route::group(array('before' => 'admin_role_only'), function () {
       // admin routes
       Route::resource('roles', 'RolesController');
       Route::resource('users', 'UsersController');

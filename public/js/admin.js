@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    $('input[type=radio][name=id]').change(function() {
+$(document).ready(function () {
+    $('input[type=radio][name=id]').change(function () {
         if ($(this).is(':checked')) {
             $('#edit_button').removeClass('disabled');
             $('#delete_button').removeClass('disabled');
@@ -9,18 +9,18 @@ $(document).ready(function() {
         }
     });
 
-    $('#edit_button').click(function() {
-        $('#edit_button').prop('href',$('#edit_button').prop('href') + '/' + $('input[name=id]:checked').val() + '/edit');
+    $('#edit_button').click(function () {
+        $('#edit_button').prop('href', $('#edit_button').prop('href') + '/' + $('input[name=id]:checked').val() + '/edit');
         return true;
     });
 
-    $('#delete_button').click(function() {
+    $('#delete_button').click(function () {
 
-        $('#delete_button').prop('href',$('#delete_button').prop('href') + '/' + $('input[name=id]:checked').val());
+        $('#delete_button').prop('href', $('#delete_button').prop('href') + '/' + $('input[name=id]:checked').val());
 
-        $('#delete_button').append(function(){
-            return "\n<form action='"+$(this).attr('href')+"' method='POST' id='del_form' style='display:none'>" +
-            "<input type='hidden' name='_method' value='DELETE' />" +
+        $('#delete_button').append(function () {
+            return "\n<form action='" + $(this).attr('href') + "' method='POST' id='del_form' style='display:none'>" +
+                "<input type='hidden' name='_method' value='DELETE' />" +
                 "<input type='hidden' name='_token' value='" + $('#csrf_token').val() + "' />";
             "</form>";
         });
@@ -29,7 +29,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $('#btn-search').click(function() {
+    $('#btn-search').click(function () {
         $('.form-search').toggle(300);
     });
 

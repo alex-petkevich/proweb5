@@ -6,23 +6,24 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract {
+class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
+{
 
-	use Authenticatable, CanResetPassword, SoftDeletes;
+   use Authenticatable, CanResetPassword, SoftDeletes;
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'users';
+   /**
+    * The database table used by the model.
+    *
+    * @var string
+    */
+   protected $table = 'users';
 
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden = array('password', 'remember_token');
+   /**
+    * The attributes excluded from the model's JSON form.
+    *
+    * @var array
+    */
+   protected $hidden = array('password', 'remember_token');
 
 
    public static $rules = array(
@@ -69,7 +70,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
    public function isAdmin()
    {
       $admin_role = Role::whereRole('admin')->first();
-      return $admin_role !=null && $this->roles->contains($admin_role->id);
+      return $admin_role != null && $this->roles->contains($admin_role->id);
    }
 
    public function isRegular()
@@ -109,7 +110,8 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
       return 'remember_token';
    }
 
-   public static function getSortOptions() {
+   public static function getSortOptions()
+   {
       $sort = array(
          '' => '-',
          'username' => trans('users.username_'),

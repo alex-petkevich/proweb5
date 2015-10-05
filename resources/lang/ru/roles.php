@@ -14,6 +14,6 @@ return array(
    'no_roles' => 'Нет ролей',
    'show_role' => 'Показать роль',
    'return_all' => 'Вернуться к списку',
-    'title' => 'Название',
-    'description' => 'Описание'
+   'title' => 'Название',
+   'description' => 'Описание'
 );

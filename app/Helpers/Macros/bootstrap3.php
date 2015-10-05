@@ -6,44 +6,38 @@
  * Time: 5:13 PM
  */
 
-Form::macro('textField', function($name, $label = null, $value = null, $attributes = array())
-{
+Form::macro('textField', function ($name, $label = null, $value = null, $attributes = array()) {
    $element = Form::text($name, $value, fieldAttributes($name, $attributes));
 
    return fieldWrapper($name, $label, $element);
 });
 
-Form::macro('passwordField', function($name, $label = null, $attributes = array())
-{
+Form::macro('passwordField', function ($name, $label = null, $attributes = array()) {
    $element = Form::password($name, fieldAttributes($name, $attributes));
 
    return fieldWrapper($name, $label, $element);
 });
 
-Form::macro('textareaField', function($name, $label = null, $value = null, $attributes = array())
-{
+Form::macro('textareaField', function ($name, $label = null, $value = null, $attributes = array()) {
    $element = Form::textarea($name, $value, fieldAttributes($name, $attributes));
 
    return fieldWrapper($name, $label, $element);
 });
 
-Form::macro('selectField', function($name, $label = null, $options, $value = null, $attributes = array())
-{
+Form::macro('selectField', function ($name, $label = null, $options, $value = null, $attributes = array()) {
    $element = Form::select($name, $options, $value, fieldAttributes($name, $attributes));
 
    return fieldWrapper($name, $label, $element);
 });
 
-Form::macro('selectMultipleField', function($name, $label = null, $options, $value = null, $attributes = array())
-{
+Form::macro('selectMultipleField', function ($name, $label = null, $options, $value = null, $attributes = array()) {
    $attributes = array_merge($attributes, ['multiple' => true]);
    $element = Form::select($name, $options, $value, fieldAttributes($name, $attributes));
 
    return fieldWrapper($name, $label, $element);
 });
 
-Form::macro('checkboxField', function($name, $label = null, $value = 1, $checked = null, $attributes = array())
-{
+Form::macro('checkboxField', function ($name, $label = null, $value = 1, $checked = null, $attributes = array()) {
    $attributes = array_merge(['id' => 'id-field-' . $name], $attributes);
 
    $out = '<div class="checkbox';
@@ -70,8 +64,7 @@ function fieldError($field)
 {
    $error = '';
 
-   if ($errors = Session::get('errors'))
-   {
+   if ($errors = Session::get('errors')) {
       $error = $errors->first($field) ? ' has-error' : '';
    }
 
@@ -98,23 +91,20 @@ function fieldAttributes($name, $attributes = array())
 }
 
 
-Html::macro('table', function($fields = array(), $data = array(), $resource, $showEdit = true, $showDelete = true, $showView = true){
+Html::macro('table', function ($fields = array(), $data = array(), $resource, $showEdit = true, $showDelete = true, $showView = true) {
    $table = '<table class="table table-bordered">';
-   $table .='<tr>';
-   if ($showEdit || $showDelete || $showView )
+   $table .= '<tr>';
+   if ($showEdit || $showDelete || $showView)
       $table .= '<th></th>';
 
-   foreach ($fields as $field)
-   {
+   foreach ($fields as $field) {
       $table .= '<th>' . Str::title($field) . '</th>';
    }
    $table .= '</tr>';
-   foreach ( $data as $d )
-   {
+   foreach ($data as $d) {
       $table .= '<tr>';
 
-      if ($showEdit || $showDelete || $showView )
-      {
+      if ($showEdit || $showDelete || $showView) {
          $table .= '<td>';
          if ($showEdit)
             $table .= '<a href="' . $resource . '/' . $d->id . '/edit" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a> ';
@@ -124,7 +114,7 @@ Html::macro('table', function($fields = array(), $data = array(), $resource, $sh
             $table .= '<a href="' . $resource . '/' . $d->id . '/delete" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i> Delete</a> ';
          $table .= '</td>';
       }
-      foreach($fields as $key) {
+      foreach ($fields as $key) {
          $table .= '<td>' . $d->$key . '</td>';
       }
       $table .= '</tr>';

@@ -3,15 +3,17 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBlogPostCategoriesTable extends Migration {
+class CreateBlogPostCategoriesTable extends Migration
+{
 
    /**
     * Run the migrations.
     *
     * @return void
     */
-   public function up() {
-      Schema::create('blog_posts_categories', function(Blueprint $table) {
+   public function up()
+   {
+      Schema::create('blog_posts_categories', function (Blueprint $table) {
          $table->increments('id');
          $table->integer('blog_post_id')->unsigned()->index();
          $table->integer('blog_category_id')->unsigned()->index();
@@ -25,7 +27,8 @@ class CreateBlogPostCategoriesTable extends Migration {
     *
     * @return void
     */
-   public function down() {
+   public function down()
+   {
       Schema::drop('blog_posts_categories');
    }
 

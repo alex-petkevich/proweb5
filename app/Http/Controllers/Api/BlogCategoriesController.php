@@ -8,6 +8,7 @@ class BlogCategoriesController extends BaseController
    {
       $this->category = $category;
    }
+
    /**
     * Display a listing of the resource.
     *

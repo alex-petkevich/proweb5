@@ -1,6 +1,7 @@
 <?php
 
-class UsersController extends BaseController {
+class UsersController extends BaseController
+{
 
    /**
     * User Repository
@@ -12,7 +13,8 @@ class UsersController extends BaseController {
 
    const UPLOAD_DIR = '/storage/users';
 
-   public function __construct(User $user) {
+   public function __construct(User $user)
+   {
       $this->user = $user;
    }
 
@@ -21,7 +23,8 @@ class UsersController extends BaseController {
     *
     * @return Response
     */
-   public function index() {
+   public function index()
+   {
       $filter = array_fill_keys($this->user->getAllColumnsNames(), "");
       $stop_fields = array('filter');
 
@@ -80,7 +83,8 @@ class UsersController extends BaseController {
     *
     * @return \Illuminate\Http\JsonResponse
     */
-   public function uploadAvatarImage() {
+   public function uploadAvatarImage()
+   {
       $rules = array('file' => 'mimes:jpeg,png');
       $validator = Validator::make(Input::all(), $rules);
       if ($validator->fails()) {
@@ -114,7 +118,8 @@ class UsersController extends BaseController {
       return Response::json(array('status' => 'ok'));
    }
 
-   public function create() {
+   public function create()
+   {
       $user = $this->user;
 
       return View::make('backend.users.edit.general', compact('user'));
@@ -126,7 +131,8 @@ class UsersController extends BaseController {
     * @param  int $id
     * @return Response
     */
-   public function show($id) {
+   public function show($id)
+   {
       $user = $this->user->findOrFail($id);
 
       return View::make('backend.users.show', compact('user'));
@@ -138,25 +144,29 @@ class UsersController extends BaseController {
     * @param  int $id
     * @return Response
     */
-   public function edit($id) {
+   public function edit($id)
+   {
       $user = $this->user->findOrFail($id);
 
       return View::make('backend.users.edit.general', compact('user'));
    }
 
-   public function edit_profile($id) {
+   public function edit_profile($id)
+   {
       $user = $this->user->findOrFail($id);
 
       return View::make('backend.users.edit.profile', compact('user'));
    }
 
-   public function edit_notes($id) {
+   public function edit_notes($id)
+   {
       $user = $this->user->findOrFail($id);
 
       return View::make('backend.users.edit.notes', compact('user'));
    }
 
-   public function store() {
+   public function store()
+   {
       $input = Input::all();
       $validation = Validator::make($input, User::$rules);
 
@@ -186,9 +196,9 @@ class UsersController extends BaseController {
       }
 
       return Redirect::route('users.create')
-                  ->withInput()
-                  ->withErrors($validation)
-                  ->with('message', trans('validation.errors'));
+         ->withInput()
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -197,7 +207,8 @@ class UsersController extends BaseController {
     * @param  int $id
     * @return Response
     */
-   public function update($id) {
+   public function update($id)
+   {
       $user = $this->user->findOrFail($id);
       $input = Input::all();
       //$validation = Validator::make($input, User::$rules);
@@ -224,11 +235,12 @@ class UsersController extends BaseController {
 
    /**
     * Update notes tab
-    * 
+    *
     * @param type $id
     * @return type
     */
-   public function update_notes($id) {
+   public function update_notes($id)
+   {
       $user = $this->user->findOrFail($id);
       $input = Input::all();
 
@@ -236,17 +248,18 @@ class UsersController extends BaseController {
       $user->save();
 
       return Redirect::route('users.edit_notes', $id)
-                  ->withInput()
-                  ->with('message', trans('validation.success'));
+         ->withInput()
+         ->with('message', trans('validation.success'));
    }
 
    /**
     *  Update profile tab
-    * 
+    *
     * @param type $id
     * @return type
     */
-   public function update_profile($id) {
+   public function update_profile($id)
+   {
       $user = $this->user->findOrFail($id);
       $input = Input::all();
 
@@ -262,8 +275,8 @@ class UsersController extends BaseController {
       $user->save();
 
       return Redirect::route('users.edit_profile', $id)
-                  ->withInput()
-                  ->with('message', trans('validation.success'));
+         ->withInput()
+         ->with('message', trans('validation.success'));
    }
 
    /**
@@ -272,7 +285,8 @@ class UsersController extends BaseController {
     * @param  int $id
     * @return Response
     */
-   public function destroy($id) {
+   public function destroy($id)
+   {
       $this->user->findOrFail($id)->delete();
 
       return Redirect::route('users.index');
@@ -281,7 +295,8 @@ class UsersController extends BaseController {
    /**
     * show edit form for user profile
     */
-   public function editProfile() {
+   public function editProfile()
+   {
       $user = Auth::user();
       if ($user == null) {
          return Redirect::to('login');
