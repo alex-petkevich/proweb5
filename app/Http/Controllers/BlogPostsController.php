@@ -1,9 +1,9 @@
 <?php
 
-class BlogPostsController extends BaseController
-{
+class BlogPostsController extends BaseController {
 
    protected $post;
+
    const UPLOAD_DIR = '/storage/blog_posts';
 
    public function __construct(Post $post) {
@@ -47,14 +47,22 @@ class BlogPostsController extends BaseController
     * @return \Illuminate\Http\Response
     */
    public function store(Request $request) {
-      $input = array_except(Input::all(), array('categories', 'file'));
+      $input = array_except(Input::all(), array('categories', 'file', 'categories_ids'));
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
       $validation = Validator::make($input, Post::$rules);
       if ($validation->passes()) {
          $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
-         $this->post->create($input);
+         $post = $this->post->create($input);
+
+         $categories = array();
+         foreach (explode(',', Input::get('categories_ids')) as $cat_id) {
+            if ($cat = \BlogCategory::where('id', '=', $cat_id)->first()) {
+               $categories[] = $cat->id;
+            }
+         }
+         $post->categories()->sync($categories);
 
          return Redirect::route('posts.index');
       }
@@ -97,7 +105,7 @@ class BlogPostsController extends BaseController
     * @return \Illuminate\Http\Response
     */
    public function update(Request $request, $id) {
-      $input = array_except(Input::all(), array('_method', '_token', 'categories', 'file'));
+      $input = array_except(Input::all(), array('_method', '_token', 'categories', 'file', 'categories_ids'));
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
@@ -110,6 +118,14 @@ class BlogPostsController extends BaseController
       if ($validation->passes()) {
          $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
          $post->update($input);
+
+         $categories = array();
+         foreach (explode(',', Input::get('categories_ids')) as $cat_id) {
+            if ($cat = \BlogCategory::where('id', '=', $cat_id)->first()) {
+               $categories[] = $cat->id;
+            }
+         }
+         $post->categories()->sync($categories);
 
          return Redirect::route('posts.index');
       }
@@ -138,8 +154,7 @@ class BlogPostsController extends BaseController
     *
     * @return \Illuminate\Http\JsonResponse
     */
-   public function uploadAvatarImage()
-   {
+   public function uploadAvatarImage() {
       $rules = array('file' => 'mimes:jpeg,png');
       $validator = Validator::make(Input::all(), $rules);
       if ($validator->fails()) {

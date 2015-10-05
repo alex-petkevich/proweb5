@@ -13,18 +13,15 @@ class Post extends BaseModel {
       'title' => 'required'
    );
 
-   public function categories()
-   {
-      return $this->belongsToMany('BlogCategory', null, 'blog_category_id', 'blog_post_id');
+   public function categories() {
+      return $this->belongsToMany('BlogCategory', null, 'blog_post_id', 'blog_category_id');
    }
 
-   public function comments()
-   {
+   public function comments() {
       return $this->hasMany('BlogComment');
    }
 
-   public static function getSortOptions()
-   {
+   public static function getSortOptions() {
       $sort = array(
          '' => '-',
          'title' => trans('blog_posts.title'),
@@ -32,6 +29,7 @@ class Post extends BaseModel {
       );
       return $sort;
    }
+
    /*  public function getTreeArray($parent_id = 0) {
      $pagesArr = $this->get()->toArray();
      return buildTree($pagesArr);
