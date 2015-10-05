@@ -21,11 +21,16 @@ class Post extends BaseModel {
       return $this->hasMany('BlogComment');
    }
 
+   public function user()
+   {
+      return $this->belongsTo('\User');
+   }
+   
    public static function getSortOptions() {
       $sort = array(
          '' => '-',
          'title' => trans('blog_posts.title'),
-         'created_at' => trans('users.created')
+         'publishied_at' => trans('blog_posts.published')
       );
       return $sort;
    }

@@ -16,8 +16,57 @@ class BlogPostsController extends BaseController {
     * @return \Illuminate\Http\Response
     */
    public function index() {
-      $posts = $this->post->paginate(Settings::getValue('TABLE_ELEMENTS'));
-      return View::make('backend.blog.posts.index', compact("posts"));
+      $filter = array_fill_keys($this->post->getAllColumnsNames(), "");
+      $stop_fields = array('filter');
+      $input = Input::all();
+
+      if (isset($input['filter']) && $input['filter'] == 'apply') {
+         $filter = array_merge($filter, $input);
+         Session::put("BLOGPOSTS_FILTER", $filter);
+      }
+
+      if (isset($input['filter']) && $input['filter'] == 'reset') {
+         Session::forget('BLOGPOSTS_FILTER');
+      }
+      if (isset($input['sort_value'])) {
+         $sort = $input['sort_value'];
+         $sort_dir = $input['sort_dir'];
+         Session::put("BLOGPOSTS_SORT", array('value' => $sort, 'dir' => $sort_dir));
+      }
+      $sort = Session::get('BLOGPOSTS_SORT');
+
+      if (isset($input['filter']) && $input['filter'] == 'reset') {
+         Session::forget('BLOGPOSTS_FILTER');
+      }
+
+      if (Session::has('BLOGPOSTS_FILTER')) {
+         $filter = Session::get('BLOGPOSTS_FILTER');
+
+         $posts = $this->post->where('id', '>', '0');
+
+         foreach ($filter as $k => $v) {
+            if (!in_array($k, $stop_fields) && $v != '') {
+               $posts = $posts->where($k, 'like', '%' . $v . '%');
+            }
+         }
+
+         if (Session::has('BLOGPOSTS_SORT') && $sort['value'] != '') {
+            $posts = $posts->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : '');
+         }
+
+         $posts = $posts->paginate(Settings::getValue('TABLE_ELEMENTS'));
+      } else {
+         if (Session::has('BLOGPOSTS_SORT') && $sort['value'] != '') {
+            $posts = $this->post->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : 'asc');
+         } else {
+            $posts = $this->post;
+         }
+         $posts = $posts->paginate(Settings::getValue('TABLE_ELEMENTS'));
+      }
+
+      $sort_options = Post::getSortOptions();
+
+      return View::make('backend.blog.posts.index', compact("posts", 'filter', 'sort_options', 'sort'));
    }
 
    /**
@@ -54,6 +103,9 @@ class BlogPostsController extends BaseController {
       $validation = Validator::make($input, Post::$rules);
       if ($validation->passes()) {
          $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
+         if (!$input['publishied_at'])
+            $input['publishied_at'] = date("Y-m-d H:i:s");
+         $input['user_id'] = Auth::user()->id;
          $post = $this->post->create($input);
 
          $categories = array();
@@ -117,6 +169,9 @@ class BlogPostsController extends BaseController {
       $validation = Validator::make($input, $rules);
       if ($validation->passes()) {
          $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
+         if (!$input['publishied_at'])
+            $input['publishied_at'] = date("Y-m-d H:i:s");
+         $input['user_id'] = Auth::user()->id;
          $post->update($input);
 
          $categories = array();
@@ -166,6 +221,25 @@ class BlogPostsController extends BaseController {
       } while (File::exists(public_path() . $dir . $filename));
       Input::file('file')->move(public_path() . $dir, $filename);
       return Response::json(array('filelink' => $dir . $filename));
+   }
+
+   public function updateState()
+   {
+      $rules = array('id' => 'numeric');
+      $validator = Validator::make(Input::all(), $rules);
+      if ($validator->fails()) {
+         return Response::json(array('status' => 'error',
+            'message' => $validator->messages()->first('id')));
+      }
+      $input = Input::all();
+
+      $post = $this->post->findOrFail($input['id']);
+      if ($post->id) {
+         $post->active = !$post->active;
+         $post->save();
+      }
+
+      return Response::json(array('status' => 'ok'));
    }
 
 }

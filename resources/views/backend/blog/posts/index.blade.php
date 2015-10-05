@@ -47,7 +47,7 @@
 
    <div class="form-group">
       {!! Form::label('title', trans('blog_posts.title'), array('class' => 'sr-only')) !!}
-      {!! Form::text('title', $filter['title'], array('class' => 'form-control input-sm', 'placeholder' =>  trans('users.title'))) !!}
+      {!! Form::text('title', $filter['title'], array('class' => 'form-control input-sm', 'placeholder' =>  trans('blog_posts.title'))) !!}
    </div>
 
    <div class="form-group">
@@ -70,23 +70,51 @@
 @if (count($posts))
 <input type="hidden" name="_token" id="csrf_token" value="{!! csrf_token() !!}"/>
 <br/>
+
+
 <table class="table table-striped table-hover table-condensed">
    <thead>
-      <tr>
-         <th></th>
-         <th>{!! trans('blog_posts.post_') !!}</th>
-      </tr>
+   <tr>
+      <th>{!! trans('blog_posts.avatar') !!}</th>
+      <th>{!! trans('blog_posts.title') !!}</th>
+      <th>{!! trans('blog_posts.published') !!}</th>
+      <th>{!! trans('blog_posts.user') !!}</th>
+      <th>{!! trans('blog_posts.categories') !!}</th>
+      <th width="5%">{!! trans('blog_posts.active') !!}</th>
+      <th colspan="2" width="5%">
+
+      </th>
+   </tr>
    </thead>
 
    <tbody>
-      @foreach ($posts as $post)
-      <tr @if (!$post['active']) class="tr-disabled" @endif id="tr-{!! $post['id'] !!}">
-           <td class="col-md-0">{!! FORM::radio('id',$post['id'],false, array('id'=>'id_'.$post['id'])) !!}</td>
-         <td>{!! Form::label('id_'.$post['id'], $post['title']) !!}</td>
+   @foreach ($posts as $post)
+      <tr @if (!$post->active) class="tr-disabled" @endif id="tr-{!! $post->id !!}">
+         <td><img src="{!! Imagecache::get($post->avatar, '150x150')->src !!}" id="thumb"
+                  style="max-width:50px; max-height: 50px;@if ($post->avatar == '') display: none;@endif"
+                  class="img-thumbnail"></td>
+         <td>{{{ $post->title }}}</td>
+         <td>{{{ $post->publishied_at }}}</td>
+         <td>
+         {!! link_to_route('users.edit', $post->user->fullname ? $post->user->fullname : $post->user->username, $post->user->id) !!}
+         <td>
+            @foreach($post->categories as $cat)
+               <span class="badge">{!! $cat->title !!}</span><br/>
+            @endforeach
+         </td>
+         <td><input type="Checkbox" name="active" class='post-active' value="{!! $post->id !!}"
+                    @if ($post->active) checked @endif /></td>
+         <td>{!! link_to_route('posts.edit', trans('blog_posts.edit'), array($post->id), array('class' => 'btn btn-info btn-sm')) !!}</td>
+         <td>
+            {!! Form::open(array('method' => 'DELETE', 'route' => array('posts.destroy', $post->id))) !!}
+            {!! Form::submit(trans('blog_posts.delete'), array('class' => 'btn btn-danger btn-sm')) !!}
+            {!! Form::close() !!}
+         </td>
       </tr>
-      @endforeach
+   @endforeach
    </tbody>
-</table>
+</table> 
+
 <?php echo $posts->render(); ?>
 
 @else
@@ -96,4 +124,39 @@
 
 @include('backend.blog.categories.index')
 @include('backend.blog.categories.edit')
+@stop
+
+
+@section('scripts')
+   <script type="text/javascript">
+      $(document).ready(function () {
+         $(".post-active").bootstrapSwitch({
+            'size': 'small',
+            onSwitchChange: changeActive
+         });
+      });
+      function changeActive(el, state) {
+         var post_id = this.value;
+         var data = new FormData();
+         data.append('id', post_id);
+         data.append('active', state);
+         $.ajax({
+            url: '/posts/update_state',
+            type: 'POST',
+            data: data,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function (result) {
+               if (state)
+                  $("#tr-" + post_id).removeClass("tr-disabled");
+               else
+                  $("#tr-" + post_id).addClass("tr-disabled");
+            },
+            error: function (result) {
+
+            }
+         });
+      }
+   </script>
 @stop

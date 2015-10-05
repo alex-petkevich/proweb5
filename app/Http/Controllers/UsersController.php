@@ -60,7 +60,7 @@ class UsersController extends BaseController {
             $users = $users->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : '');
          }
 
-         $users = $users->paginate(Config::get('view.paginate-qty'));
+         $users = $users->paginate(Settings::getValue('TABLE_ELEMENTS'));
       } else {
          if (Session::has('USER_SORT') && $sort['value'] != '') {
             $users = $this->user->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : 'asc');

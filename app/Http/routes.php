@@ -79,6 +79,7 @@ Route::group(array('after' => 'admin.auth'), function() {
 
       Route::resource('posts', 'BlogPostsController');
       Route::post('posts/upload', array('uses' => 'BlogPostsController@uploadAvatarImage'));
+      Route::post('posts/update_state', array('uses' => 'BlogPostsController@updateState'));
 
       Route::resource('settings', 'SettingsController', ['except' => ['show']]);
 
