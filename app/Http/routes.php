@@ -78,10 +78,14 @@ Route::group(array('after' => 'admin.auth'), function () {
       Route::resource('users', 'UsersController');
 
       Route::resource('api/blog/categories', 'BlogCategoriesController');
+      Route::resource('api/promos/categories', 'PromoCategoriesController');
 
       Route::resource('posts', 'BlogPostsController');
       Route::post('posts/upload', array('uses' => 'BlogPostsController@uploadAvatarImage'));
       Route::post('posts/update_state', array('uses' => 'BlogPostsController@updateState'));
+
+      Route::post('promos/upload', array('uses' => 'PromosController@uploadImage'));
+      Route::post('promos/update_state', array('uses' => 'PromosController@updateState'));
 
       Route::resource('settings', 'SettingsController', ['except' => ['show']]);
 

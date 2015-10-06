@@ -100,6 +100,7 @@
             @if ($post->user!=null)
             {!! link_to_route('users.edit', $post->user->fullname ? $post->user->fullname : $post->user->username, $post->user->id) !!}
             @endif
+         </td>
          <td>
             @foreach($post->categories as $cat)
             <span class="badge">{!! $cat->title !!}</span><br/>
