@@ -57,8 +57,8 @@
    </div>
 
    <div class="form-group">
-      {!! Form::label('active', trans('blog_posts.active'), array('class' => 'control-label')) !!}
-      {!! Form::select('active', [''=>'-','1'=>trans('general.yes'),'0'=>trans('general.no')], $filter['active'], array('class' => 'form-control input-sm')) !!}
+      {!! Form::label('search-active', trans('blog_posts.active'), array('class' => 'control-label')) !!}
+      {!! Form::select('active', [''=>'-','1'=>trans('general.yes'),'0'=>trans('general.no')], $filter['active'], array('class' => 'form-control input-sm', 'id'=>'search-active')) !!}
    </div>
 
    {!! Form::submit(trans('blog_posts.search'), array('class' => 'btn btn-info btn-sm')) !!}

@@ -1,11 +1,12 @@
 <?php
 
-class BlogCategoriesController extends BaseController
-{
+use Illuminate\Http\Request;
+
+class BlogCategoriesController extends BaseController {
+
    protected $category;
 
-   public function __construct(BlogCategory $category)
-   {
+   public function __construct(BlogCategory $category) {
       $this->category = $category;
    }
 
@@ -14,9 +15,10 @@ class BlogCategoriesController extends BaseController
     *
     * @return \Illuminate\Http\Response
     */
-   public function index()
-   {
-      $categories = $this->category->getTreeArray(0, 0);
+   public function index(Request $request) {
+      $active = (int) $request->input('active');
+
+      $categories = $this->category->getTreeArray(0, $active);
       return $categories;
    }
 
@@ -25,8 +27,7 @@ class BlogCategoriesController extends BaseController
     *
     * @return \Illuminate\Http\Response
     */
-   public function create()
-   {
+   public function create() {
       //
    }
 
@@ -36,14 +37,13 @@ class BlogCategoriesController extends BaseController
     * @param  \Illuminate\Http\Request $request
     * @return \Illuminate\Http\Response
     */
-   public function store(Request $request)
-   {
+   public function store(Request $request) {
       $input = Input::all();
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
-      $input['parent_id'] = (int)$input['parent_id'];
-      $input['active'] = (int)($input['active'] == 'true');
+      $input['parent_id'] = (int) $input['parent_id'];
+      $input['active'] = (int) ($input['active'] == 'true');
       $validation = Validator::make($input, BlogCategory::$rules);
       if ($validation->passes()) {
          $this->category->create($input);
@@ -58,8 +58,7 @@ class BlogCategoriesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function show($id)
-   {
+   public function show($id) {
       //
    }
 
@@ -69,8 +68,7 @@ class BlogCategoriesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function edit($id)
-   {
+   public function edit($id) {
       //
    }
 
@@ -81,14 +79,13 @@ class BlogCategoriesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function update(Request $request, $id)
-   {
+   public function update(Request $request, $id) {
       $input = Input::all();
       if (empty($input['name'])) {
          $input['name'] = str_slug($input['title'], '-');
       }
-      $input['parent_id'] = (int)$input['parent_id'];
-      $input['active'] = (int)($input['active'] == 'true');
+      $input['parent_id'] = (int) $input['parent_id'];
+      $input['active'] = (int) ($input['active'] == 'true');
       $category = $this->category->find($id);
       $rules = BlogCategory::$rules;
       if ($category->id) {
@@ -112,12 +109,12 @@ class BlogCategoriesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function destroy($id)
-   {
+   public function destroy($id) {
       BlogCategory::where('parent_id', '=', $id)->delete();
       $cat = BlogCategory::find($id);
       if ($cat)
          $cat->delete();
       return array('status' => 'OK');
    }
+
 }

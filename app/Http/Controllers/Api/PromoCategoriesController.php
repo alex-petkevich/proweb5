@@ -1,11 +1,12 @@
 <?php
 
-class PromoCategoriesController extends BaseController
-{
+use Illuminate\Http\Request;
+
+class PromoCategoriesController extends BaseController {
+
    protected $category;
 
-   public function __construct(PromoCategory $category)
-   {
+   public function __construct(PromoCategory $category) {
       $this->category = $category;
    }
 
@@ -14,9 +15,16 @@ class PromoCategoriesController extends BaseController
     *
     * @return \Illuminate\Http\Response
     */
-   public function index()
-   {
-      $categories = $this->category->get();
+   public function index(Request $request) {
+
+      $active = $request->input('active');
+
+      if ($active) {
+         $categories = $this->category->where('active', '=', '1')->get();
+      } else {
+         $categories = $this->category->get();
+      }
+
       return $categories;
    }
 
@@ -25,8 +33,7 @@ class PromoCategoriesController extends BaseController
     *
     * @return \Illuminate\Http\Response
     */
-   public function create()
-   {
+   public function create() {
       //
    }
 
@@ -36,10 +43,9 @@ class PromoCategoriesController extends BaseController
     * @param  \Illuminate\Http\Request $request
     * @return \Illuminate\Http\Response
     */
-   public function store(Request $request)
-   {
+   public function store(Request $request) {
       $input = Input::all();
-      $input['active'] = (int)($input['active'] == 'true');
+      $input['active'] = (int) ($input['active'] == 'true');
       $validation = Validator::make($input, BlogCategory::$rules);
       if ($validation->passes()) {
          $this->category->create($input);
@@ -54,8 +60,7 @@ class PromoCategoriesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function show($id)
-   {
+   public function show($id) {
       //
    }
 
@@ -65,8 +70,7 @@ class PromoCategoriesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function edit($id)
-   {
+   public function edit($id) {
       //
    }
 
@@ -77,15 +81,14 @@ class PromoCategoriesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function update(Request $request, $id)
-   {
+   public function update(Request $request, $id) {
       $input = Input::all();
       $category = $this->category->find($id);
       $rules = BlogCategory::$rules;
       if ($category->id) {
          $rules['name'] = $rules['name'] . ', ' . $category->id;
       }
-      $input['active'] = (int)($input['active'] == 'true');
+      $input['active'] = (int) ($input['active'] == 'true');
       $validation = Validator::make($input, $rules);
       if ($validation->passes()) {
          if ($category->id) {
@@ -104,11 +107,11 @@ class PromoCategoriesController extends BaseController
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function destroy($id)
-   {
+   public function destroy($id) {
       $cat = PromoCategory::find($id);
       if ($cat)
          $cat->delete();
       return array('status' => 'OK');
    }
+
 }

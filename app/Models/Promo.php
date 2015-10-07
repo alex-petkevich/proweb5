@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Promo extends BaseModel
-{
+class Promo extends BaseModel {
 
    use SoftDeletes;
 
@@ -14,13 +13,11 @@ class Promo extends BaseModel
       'img' => 'required'
    );
 
-   public function categories()
-   {
+   public function category() {
       return $this->belongsTo('PromoCategory');
    }
 
-   public static function getSortOptions()
-   {
+   public static function getSortOptions() {
       $sort = array(
          '' => '-',
          'name' => trans('promos.name'),
@@ -29,4 +26,5 @@ class Promo extends BaseModel
       );
       return $sort;
    }
+
 }

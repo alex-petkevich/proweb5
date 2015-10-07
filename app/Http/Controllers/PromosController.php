@@ -2,15 +2,13 @@
 
 use Illuminate\Http\Request;
 
-class PromosController extends Controller
-{
+class PromosController extends Controller {
 
    protected $promo;
 
    const UPLOAD_DIR = '/storage/promos';
 
-   public function __construct(Promo $promo)
-   {
+   public function __construct(Promo $promo) {
       $this->promo = $promo;
    }
 
@@ -19,8 +17,7 @@ class PromosController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-   public function index()
-   {
+   public function index() {
       $filter = array_fill_keys($this->promo->getAllColumnsNames(), "");
       $stop_fields = array('filter');
       $input = Input::all();
@@ -79,15 +76,14 @@ class PromosController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-   public function create()
-   {
+   public function create() {
       $promo = $this->promo;
 
       if (Input::old('image') != '') {
          $promo->img = Input::old('image');
       }
 
-      return View::make('backend.promos.edit', compact('post'));
+      return View::make('backend.promos.edit', compact('promo'));
    }
 
    /**
@@ -96,21 +92,20 @@ class PromosController extends Controller
     * @param  \Illuminate\Http\Request $request
     * @return \Illuminate\Http\Response
     */
-   public function store(Request $request)
-   {
+   public function store(Request $request) {
       $input = array_except(Input::all(), array('category', 'file'));
       $validation = Validator::make($input, Promo::$rules);
       if ($validation->passes()) {
-         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
+         $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
          $promo = $this->promo->create($input);
 
          return Redirect::route('promos.index');
       }
 
       return Redirect::route('promos.create')
-         ->withInput()
-         ->withErrors($validation)
-         ->with('message', trans('validation.errors'));
+                  ->withInput()
+                  ->withErrors($validation)
+                  ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -119,8 +114,7 @@ class PromosController extends Controller
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function show($id)
-   {
+   public function show($id) {
       return View::make('frontend.promos.show');
    }
 
@@ -130,11 +124,10 @@ class PromosController extends Controller
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function edit($id)
-   {
+   public function edit($id) {
       $promo = $this->promo->findOrFail($id);
 
-      return View::make('backend.promos.edit', compact('post'));
+      return View::make('backend.promos.edit', compact('promo'));
    }
 
    /**
@@ -144,23 +137,25 @@ class PromosController extends Controller
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function update(Request $request, $id)
-   {
+   public function update(Request $request, $id) {
       $input = array_except(Input::all(), array('_method', '_token', 'category', 'file'));
       $promo = $this->promo->find($id);
       $rules = Promo::$rules;
+      if ($promo->id) {
+         $rules['name'] = $rules['name'] . ', ' . $promo->id;
+      }
       $validation = Validator::make($input, $rules);
       if ($validation->passes()) {
-         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
+         $input['active'] = isset($input['active']) ? (int) $input['active'] : 0;
          $promo->update($input);
 
          return Redirect::route('promos.index');
       }
 
       return Redirect::route('promos.edit', $id)
-         ->withInput()
-         ->withErrors($validation)
-         ->with('message', trans('validation.errors'));
+                  ->withInput()
+                  ->withErrors($validation)
+                  ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -169,12 +164,11 @@ class PromosController extends Controller
     * @param  int $id
     * @return \Illuminate\Http\Response
     */
-   public function destroy($id)
-   {
+   public function destroy($id) {
       $this->promo->find($id)->delete();
 
       return Redirect::route('promos.index')
-         ->with('message', trans('validation.success'));
+                  ->with('message', trans('validation.success'));
    }
 
    /**
@@ -182,8 +176,7 @@ class PromosController extends Controller
     *
     * @return \Illuminate\Http\JsonResponse
     */
-   public function uploadImage()
-   {
+   public function uploadImage() {
       $rules = array('file' => 'mimes:jpeg,png');
       $validator = Validator::make(Input::all(), $rules);
       if ($validator->fails()) {
@@ -197,19 +190,18 @@ class PromosController extends Controller
       return Response::json(array('filelink' => $dir . $filename));
    }
 
-   public function updateState()
-   {
+   public function updateState() {
       $rules = array('id' => 'numeric');
       $validator = Validator::make(Input::all(), $rules);
       if ($validator->fails()) {
          return Response::json(array('status' => 'error',
-            'message' => $validator->messages()->first('id')));
+                  'message' => $validator->messages()->first('id')));
       }
       $input = Input::all();
 
       $promo = $this->promo->findOrFail($input['id']);
       if ($promo->id) {
-         $promo->active = !$post->active;
+         $promo->active = !$promo->active;
          $promo->save();
       }
 
