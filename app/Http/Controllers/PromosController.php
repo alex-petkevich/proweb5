@@ -79,8 +79,8 @@ class PromosController extends Controller {
    public function create() {
       $promo = $this->promo;
 
-      if (Input::old('image') != '') {
-         $promo->img = Input::old('image');
+      if (Input::old('img') != '') {
+         $promo->img = Input::old('img');
       }
 
       return View::make('backend.promos.edit', compact('promo'));

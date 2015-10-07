@@ -47,8 +47,8 @@
 <div class="well">
 
    <div class="form-group">
-      {!! Form::label('title', trans('promos.name'), array('class' => 'sr-only')) !!}
-      {!! Form::text('title', $filter['name'], array('class' => 'form-control input-sm', 'placeholder' =>  trans('promos.name'))) !!}
+      {!! Form::label('name', trans('promos.name'), array('class' => 'sr-only')) !!}
+      {!! Form::text('name', $filter['name'], array('class' => 'form-control input-sm', 'placeholder' =>  trans('promos.name'))) !!}
    </div>
 
    <div class="form-group">

@@ -4,6 +4,16 @@ use Illuminate\Http\Request;
 
 class ProposalsController extends Controller
 {
+
+   protected $proposal;
+
+   const UPLOAD_DIR = '/storage/proposals';
+
+   public function __construct(Proposal $proposal)
+   {
+      $this->proposal = $proposal;
+   }
+
    /**
     * Display a listing of the resource.
     *
@@ -11,7 +21,57 @@ class ProposalsController extends Controller
     */
    public function index()
    {
-      //
+      $filter = array_fill_keys($this->proposal->getAllColumnsNames(), "");
+      $stop_fields = array('filter');
+      $input = Input::all();
+
+      if (isset($input['filter']) && $input['filter'] == 'apply') {
+         $filter = array_merge($filter, $input);
+         Session::put("PROPOSALS_FILTER", $filter);
+      }
+
+      if (isset($input['filter']) && $input['filter'] == 'reset') {
+         Session::forget('PROPOSALS_FILTER');
+      }
+      if (isset($input['sort_value'])) {
+         $sort = $input['sort_value'];
+         $sort_dir = $input['sort_dir'];
+         Session::put("PROPOSALS_SORT", array('value' => $sort, 'dir' => $sort_dir));
+      }
+      $sort = Session::get('PROPOSALS_SORT');
+
+      if (isset($input['filter']) && $input['filter'] == 'reset') {
+         Session::forget('PROPOSALS_FILTER');
+      }
+
+      if (Session::has('PROPOSALS_FILTER')) {
+         $filter = Session::get('PROPOSALS_FILTER');
+
+         $proposals = $this->proposal->where('id', '>', '0');
+
+         foreach ($filter as $k => $v) {
+            if (!in_array($k, $stop_fields) && $v != '') {
+               $proposals = $proposals->where($k, 'like', '%' . $v . '%');
+            }
+         }
+
+         if (Session::has('PROPOSALS_SORT') && $sort['value'] != '') {
+            $proposals = $proposals->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : '');
+         }
+
+         $proposals = $proposals->paginate(Settings::getValue('TABLE_ELEMENTS'));
+      } else {
+         if (Session::has('PROPOSALS_SORT') && $sort['value'] != '') {
+            $proposals = $this->proposal->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : 'asc');
+         } else {
+            $proposals = $this->proposal;
+         }
+         $proposals = $proposals->paginate(Settings::getValue('TABLE_ELEMENTS'));
+      }
+
+      $sort_options = Proposal::getSortOptions();
+
+      return View::make('backend.proposals.index', compact("proposals", 'filter', 'sort_options', 'sort'));
    }
 
    /**
@@ -21,7 +81,9 @@ class ProposalsController extends Controller
     */
    public function create()
    {
-      //
+      $proposal = $this->proposal;
+
+      return View::make('backend.proposals.edit', compact('proposal'));
    }
 
    /**
@@ -32,7 +94,25 @@ class ProposalsController extends Controller
     */
    public function store(Request $request)
    {
-      //
+      $input = array_except(Input::all(), array());
+      if (empty($input['name'])) {
+         $input['name'] = str_slug($input['title'], '-');
+      }
+      $validation = Validator::make($input, Proposal::$rules);
+      if ($validation->passes()) {
+         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
+         if (!$input['published_at'])
+            $input['published_at'] = date("Y-m-d H:i:s");
+         $input['user_id'] = Auth::user()->id;
+         $proposal = $this->proposal->create($input);
+
+         return Redirect::route('proposals.index');
+      }
+
+      return Redirect::route('proposals.create')
+         ->withInput()
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -43,7 +123,7 @@ class ProposalsController extends Controller
     */
    public function show($id)
    {
-      //
+      return View::make('frontend.proposals.show');
    }
 
    /**
@@ -54,7 +134,9 @@ class ProposalsController extends Controller
     */
    public function edit($id)
    {
-      //
+      $proposal = $this->proposal->findOrFail($id);
+
+      return View::make('backend.proposals.edit', compact('proposal'));
    }
 
    /**
@@ -66,7 +148,30 @@ class ProposalsController extends Controller
     */
    public function update(Request $request, $id)
    {
-      //
+      $input = array_except(Input::all(), array('_method', '_token'));
+      if (empty($input['name'])) {
+         $input['name'] = str_slug($input['title'], '-');
+      }
+      $proposal = $this->proposal->find($id);
+      $rules = Proposal::$rules;
+      if ($proposal->id) {
+         $rules['name'] = $rules['name'] . ', ' . $proposal->id;
+      }
+      $validation = Validator::make($input, $rules);
+      if ($validation->passes()) {
+         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
+         if (!$input['published_at'])
+            $input['published_at'] = date("Y-m-d H:i:s");
+         $input['user_id'] = Auth::user()->id;
+         $proposal->update($input);
+
+         return Redirect::route('proposals.index');
+      }
+
+      return Redirect::route('proposals.edit', $id)
+         ->withInput()
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
    }
 
    /**
@@ -77,6 +182,48 @@ class ProposalsController extends Controller
     */
    public function destroy($id)
    {
-      //
+      $this->proposal->find($id)->delete();
+
+      return Redirect::route('proposals.index')
+         ->with('message', trans('validation.success'));
+   }
+
+   /**
+    * Save uploaded avatar image
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
+   public function uploadImage()
+   {
+      $rules = array('file' => 'mimes:jpeg,png');
+      $validator = Validator::make(Input::all(), $rules);
+      if ($validator->fails()) {
+         return Response::json(array('message' => $validator->messages()->first('file')));
+      }
+      $dir = self::UPLOAD_DIR . '/images' . date('/Y/m/d/');
+      do {
+         $filename = str_random(30) . '.jpg';
+      } while (File::exists(public_path() . $dir . $filename));
+      Input::file('file')->move(public_path() . $dir, $filename);
+      return Response::json(array('filelink' => $dir . $filename));
+   }
+
+   public function updateState()
+   {
+      $rules = array('id' => 'numeric');
+      $validator = Validator::make(Input::all(), $rules);
+      if ($validator->fails()) {
+         return Response::json(array('status' => 'error',
+            'message' => $validator->messages()->first('id')));
+      }
+      $input = Input::all();
+
+      $proposal = $this->proposal->findOrFail($input['id']);
+      if ($proposal->id) {
+         $proposal->active = !$proposal->active;
+         $proposal->save();
+      }
+
+      return Response::json(array('status' => 'ok'));
    }
 }
