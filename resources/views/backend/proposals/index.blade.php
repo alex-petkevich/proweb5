@@ -41,18 +41,13 @@
     <div class="well">
 
         <div class="form-group">
-            {!! Form::label('title', trans('proposals.name'), array('class' => 'sr-only')) !!}
-            {!! Form::text('title', $filter['name'], array('class' => 'form-control input-sm', 'placeholder' =>  trans('proposals.name'))) !!}
+            {!! Form::label('title', trans('proposals.title'), array('class' => 'sr-only')) !!}
+            {!! Form::text('title', $filter['title'], array('class' => 'form-control input-sm', 'placeholder' =>  trans('proposals.title'))) !!}
         </div>
 
         <div class="form-group">
             {!! Form::label('description', trans('proposals.description'), array('class' => 'sr-only')) !!}
             {!! Form::text('description', $filter['description'], array('class' => 'form-control input-sm', 'placeholder' =>  trans('proposals.description'))) !!}
-        </div>
-
-        <div class="form-group">
-            {!! Form::label('search-active', trans('proposals.active'), array('class' => 'control-label')) !!}
-            {!! Form::select('active', [''=>'-','1'=>trans('general.yes'),'0'=>trans('general.no')], $filter['active'], array('class' => 'form-control input-sm', 'id' => 'search-active')) !!}
         </div>
 
         {!! Form::submit(trans('proposals.search'), array('class' => 'btn btn-info btn-sm')) !!}
@@ -70,11 +65,9 @@
         <table class="table table-striped table-hover table-condensed">
             <thead>
             <tr>
-                <th>{!! trans('proposals.img') !!}</th>
-                <th>{!! trans('proposals.name') !!}</th>
-                <th>{!! trans('proposals.category') !!}</th>
-                <th>{!! trans('proposals.clicks') !!} / {!! trans('proposals.shows') !!}</th>
-                <th width="5%">{!! trans('proposals.active') !!}</th>
+                <th>{!! trans('proposals.published_at') !!}</th>
+                <th>{!! trans('proposals.title') !!}</th>
+                <th>{!! trans('proposals.user') !!}</th>
                 <th colspan="2" width="5%">
 
                 </th>
@@ -83,19 +76,14 @@
 
             <tbody>
             @foreach ($proposals as $proposal)
-                <tr @if (!$proposal->active) class="tr-disabled" @endif id="tr-{!! $proposal->id !!}">
-                    <td><img src="{!! Imagecache::get($proposal->img, '150x150')->src !!}" id="thumb"
-                             style="max-width:50px; max-height: 50px;@if ($proposal->img == '') display: none;@endif"
-                             class="img-thumbnail"></td>
-                    <td>{{{ $proposal->name }}}</td>
+                <tr id="tr-{!! $proposal->id !!}">
+                    <td>{{{ date('d.m.Y',strtotime($proposal->published_at)) }}}</td>
+                    <td>{{{ $proposal->title }}}</td>
                     <td>
-                        @if ($proposal->category)
-                            <span class="badge">{!! $proposal->category->name !!}</span>
+                        @if ($proposal->user!=null)
+                            {!! link_to_route('users.edit', $proposal->user->fullname ? $proposal->user->fullname : $proposal->user->username, $proposal->user->id) !!}
                         @endif
                     </td>
-                    <td>{{{ $proposal->clicks }}} / {{{ $proposal->shows }}}</td>
-                    <td><input type="Checkbox" name="active" class='proposal-active' value="{!! $proposal->id !!}"
-                               @if ($proposal->active) checked @endif /></td>
                     <td>{!! link_to_route('proposals.edit', trans('proposals.edit'), array($proposal->id), array('class' => 'btn btn-info btn-sm')) !!}</td>
                     <td>
                         {!! Form::open(array('method' => 'DELETE', 'route' => array('proposals.destroy', $proposal->id))) !!}
@@ -113,42 +101,13 @@
         <p class="text-center">
             {!! trans('proposals.no_proposals') !!}</p>
     @endif
-
-    @include('backend.proposals.categories.index')
-    @include('backend.proposals.categories.edit')
 @stop
 
 
 @section('scripts')
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".proposal-active").bootstrapSwitch({
-                'size': 'small',
-                onSwitchChange: changeActive
-            });
-        });
-        function changeActive(el, state) {
-            var proposal_id = this.value;
-            var data = new FormData();
-            data.append('id', proposal_id);
-            data.append('active', state);
-            $.ajax({
-                url: '/proposals/update_state',
-                type: 'POST',
-                data: data,
-                processData: false,
-                contentType: false,
-                dataType: 'json',
-                success: function (result) {
-                    if (state)
-                        $("#tr-" + proposal_id).removeClass("tr-disabled");
-                    else
-                        $("#tr-" + proposal_id).addClass("tr-disabled");
-                },
-                error: function (result) {
 
-                }
-            });
-        }
+        });
     </script>
 @stop

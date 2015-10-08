@@ -52,6 +52,11 @@
    </div>
 
    <div class="form-group">
+      {!! Form::label('user', trans('blog_posts.user'), array('class' => 'sr-only')) !!}
+      {!! Form::text('user_id', isset($filter['user_id'])?$filter['user_id']:'', array('class' => 'form-control input-sm', 'placeholder' =>  trans('blog_posts.user'))) !!}
+   </div>
+
+   <div class="form-group">
       {!! Form::label('description', trans('blog_posts.description'), array('class' => 'sr-only')) !!}
       {!! Form::text('description', $filter['description'], array('class' => 'form-control input-sm', 'placeholder' =>  trans('blog_posts.description'))) !!}
    </div>

@@ -10,7 +10,6 @@ class Proposal extends BaseModel
    protected $guarded = array();
    protected $table = 'proposals';
    public static $rules = array(
-      'name' => 'required|alpha_dash|min:2|max:200|unique:proposals,name',
       'title' => 'required'
    );
 
@@ -24,7 +23,7 @@ class Proposal extends BaseModel
       $sort = array(
          '' => '-',
          'title' => trans('proposals.title'),
-         'publishied_at' => trans('proposals.published')
+         'publishied_at' => trans('proposals.published_at')
       );
       return $sort;
    }

@@ -95,12 +95,8 @@ class ProposalsController extends Controller
    public function store(Request $request)
    {
       $input = array_except(Input::all(), array());
-      if (empty($input['name'])) {
-         $input['name'] = str_slug($input['title'], '-');
-      }
       $validation = Validator::make($input, Proposal::$rules);
       if ($validation->passes()) {
-         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
          if (!$input['published_at'])
             $input['published_at'] = date("Y-m-d H:i:s");
          $input['user_id'] = Auth::user()->id;
@@ -149,17 +145,10 @@ class ProposalsController extends Controller
    public function update(Request $request, $id)
    {
       $input = array_except(Input::all(), array('_method', '_token'));
-      if (empty($input['name'])) {
-         $input['name'] = str_slug($input['title'], '-');
-      }
       $proposal = $this->proposal->find($id);
       $rules = Proposal::$rules;
-      if ($proposal->id) {
-         $rules['name'] = $rules['name'] . ', ' . $proposal->id;
-      }
       $validation = Validator::make($input, $rules);
       if ($validation->passes()) {
-         $input['active'] = isset($input['active']) ? (int)$input['active'] : 0;
          if (!$input['published_at'])
             $input['published_at'] = date("Y-m-d H:i:s");
          $input['user_id'] = Auth::user()->id;
@@ -206,24 +195,5 @@ class ProposalsController extends Controller
       } while (File::exists(public_path() . $dir . $filename));
       Input::file('file')->move(public_path() . $dir, $filename);
       return Response::json(array('filelink' => $dir . $filename));
-   }
-
-   public function updateState()
-   {
-      $rules = array('id' => 'numeric');
-      $validator = Validator::make(Input::all(), $rules);
-      if ($validator->fails()) {
-         return Response::json(array('status' => 'error',
-            'message' => $validator->messages()->first('id')));
-      }
-      $input = Input::all();
-
-      $proposal = $this->proposal->findOrFail($input['id']);
-      if ($proposal->id) {
-         $proposal->active = !$proposal->active;
-         $proposal->save();
-      }
-
-      return Response::json(array('status' => 'ok'));
    }
 }

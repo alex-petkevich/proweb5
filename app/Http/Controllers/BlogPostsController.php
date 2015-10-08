@@ -20,7 +20,7 @@ class BlogPostsController extends BaseController
    public function index()
    {
       $filter = array_fill_keys($this->post->getAllColumnsNames(), "");
-      $stop_fields = array('filter');
+      $stop_fields = array('filter', 'user_id');
       $input = Input::all();
 
       if (isset($input['filter']) && $input['filter'] == 'apply') {
@@ -51,6 +51,10 @@ class BlogPostsController extends BaseController
             if (!in_array($k, $stop_fields) && $v != '') {
                $posts = $posts->where($k, 'like', '%' . $v . '%');
             }
+         }
+         if ($filter['user_id']) {
+            $users = User::where('username', 'like', '%' . $filter['user_id'] . '%')->get();
+            $posts = $posts->whereIn('user_id', $users->toArray());
          }
 
          if (Session::has('BLOGPOSTS_SORT') && $sort['value'] != '') {
