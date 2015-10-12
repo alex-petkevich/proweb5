@@ -91,9 +91,10 @@ Route::group(array('after' => 'admin.auth'), function () {
 
       Route::get('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@edit_profile'));
       Route::get('users/{users}/edit_notes', array('as' => 'users.edit_notes', 'uses' => 'UsersController@edit_notes'));
-      Route::patch('users/{users}/edit_profile', array('as' => 'users.edit_profile', 'uses' => 'UsersController@update_profile'));
+      Route::patch('users/{users}/update_user', array('as' => 'users.update_user', 'uses' => 'UsersController@update_user'));
       Route::patch('users/{users}/edit_notes', array('as' => 'users.edit_notes', 'uses' => 'UsersController@update_notes'));
       Route::patch('users/{users}/edit', array('as' => 'users.edit', 'uses' => 'UsersController@update'));
+      Route::patch('users/{users}/', array('as' => 'users.edit_profile', 'uses' => 'UsersController@update_profile'));
       Route::post('users/upload', array('uses' => 'UsersController@uploadAvatarImage'));
       Route::post('users/update_state', array('uses' => 'UsersController@updateState'));
 

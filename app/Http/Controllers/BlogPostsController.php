@@ -54,7 +54,7 @@ class BlogPostsController extends BaseController
          }
          if ($filter['user_id']) {
             $users = User::where('username', 'like', '%' . $filter['user_id'] . '%')->get();
-            $posts = $posts->whereIn('user_id', $users->toArray());
+            $posts = $posts->whereIn('user_id', $users->pluck('id')->all());
          }
 
          if (Session::has('BLOGPOSTS_SORT') && $sort['value'] != '') {

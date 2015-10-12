@@ -7,7 +7,7 @@ return array(
    'roles' => 'Роли:',
    'birthdate' => 'Дата рождения:',
    'fullname' => 'ФИО:',
-   'notifications' => 'Отправлять уведомления:',
+   'notifications' => 'Отправлять системные уведомления на email',
    'avatar' => 'Изображение',
    'submit' => 'Подтвердить',
    'edit_user' => 'Изменить пользователя',

@@ -233,6 +233,48 @@ class UsersController extends BaseController
       return Redirect::route('users.index');
    }
 
+   public function update_user($id)
+   {
+      $user = $this->user->findOrFail($id);
+      $input = array_except(Input::all(), array('_method', '_token', 'username'));
+      $input['username'] = $user->username;
+
+      $rules = User::$rules;
+
+      if ($user->id) {
+         $rules['username'] = $rules['username'] . ',' . $user->id;
+         $rules['email'] = $rules['email'] . ',' . $user->id;
+         $rules['password'] = 'alpha_num|between:0,50';
+      }
+
+      if ($user->avatar && $user->avatar != $input['image'] && File::exists($user->avatar)) {
+         File::delete($user->avatar);
+      }
+
+      $validation = Validator::make($input, $rules);
+      if ($validation->passes()) {
+
+         if (!empty($input['password'])) {
+            $input['password'] = Hash::make($input['password']);
+         } else {
+            unset($input['password']);
+         }
+         $input['avatar'] = $input['image'];
+         unset($input['image']);
+         unset($input['file']);
+
+         $user->update($input);
+
+         return Redirect::route('user.profile');
+      }
+
+      return Redirect::route('user.profile')
+         ->withInput()
+         ->withErrors($validation)
+         ->with('message', trans('validation.errors'));
+
+   }
+   
    /**
     * Update notes tab
     *

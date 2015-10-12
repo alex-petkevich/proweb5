@@ -18,6 +18,8 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
     */
    protected $table = 'users';
 
+   protected $guarded = [];
+
    /**
     * The attributes excluded from the model's JSON form.
     *

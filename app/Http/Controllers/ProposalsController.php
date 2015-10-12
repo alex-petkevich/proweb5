@@ -22,7 +22,7 @@ class ProposalsController extends Controller
    public function index()
    {
       $filter = array_fill_keys($this->proposal->getAllColumnsNames(), "");
-      $stop_fields = array('filter');
+      $stop_fields = array('filter', 'user_id');
       $input = Input::all();
 
       if (isset($input['filter']) && $input['filter'] == 'apply') {
@@ -54,7 +54,11 @@ class ProposalsController extends Controller
                $proposals = $proposals->where($k, 'like', '%' . $v . '%');
             }
          }
-
+         if ($filter['user_id']) {
+            $users = User::where('username', 'like', '%' . $filter['user_id'] . '%')->get();
+            $proposals = $proposals->whereIn('user_id', $users->pluck('id')->all());
+         }
+         
          if (Session::has('PROPOSALS_SORT') && $sort['value'] != '') {
             $proposals = $proposals->orderBy($sort['value'], $sort['dir'] == '1' ? 'desc' : '');
          }

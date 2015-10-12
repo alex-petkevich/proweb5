@@ -50,6 +50,11 @@
             {!! Form::text('description', $filter['description'], array('class' => 'form-control input-sm', 'placeholder' =>  trans('proposals.description'))) !!}
         </div>
 
+        <div class="form-group">
+            {!! Form::label('user', trans('proposals.user'), array('class' => 'sr-only')) !!}
+            {!! Form::text('user_id', isset($filter['user_id'])?$filter['user_id']:'', array('class' => 'form-control input-sm', 'placeholder' =>  trans('proposals.user'))) !!}
+        </div>
+
         {!! Form::submit(trans('proposals.search'), array('class' => 'btn btn-info btn-sm')) !!}
         {!! link_to_route('proposals.index', trans('proposals.clear'), array('filter'=>'reset'), array('class' => 'btn btn-default btn-sm')) !!}
         {!! Form::hidden('filter','apply') !!}
