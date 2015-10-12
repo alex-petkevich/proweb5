@@ -23,6 +23,9 @@ class Settings extends BaseModel
       }
 
       $val = Settings::where('name', '=', $key)->first();
+      
+      if ($val === null)
+         return null;
 
       Cache::put($key, $val->value, self::TTL_CACHE);
 
